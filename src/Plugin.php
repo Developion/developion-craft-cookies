@@ -19,7 +19,7 @@ use craft\web\View;
 use yii\base\Event;
 
 /**
- * Hoanzl Kekse plugin
+ * Developion Cookies plugin
  *
  * @method static Plugin getInstance()
  * @method Settings getSettings()
