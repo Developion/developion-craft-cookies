@@ -28,4 +28,6 @@ class Settings extends Model
 	public string $cookieSettingsButtonText = 'Cookie Settings';
 
 	public string $cookieNamePrefix = 'cookieConsent_';
+
+	public string $cookieManagerUrl = 'https://cookie-manager.ddev.site/api/cookies';
 }

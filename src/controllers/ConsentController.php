@@ -1,10 +1,15 @@
 <?php
 
-namespace contentreactor\hoanzlkekse\controllers;
+namespace developion\craftcookies\controllers;
 
-use contentreactor\hoanzlkekse\Plugin;
+use developion\craftcookies\Plugin;
 use Craft;
+use craft\helpers\App;
+use craft\helpers\ArrayHelper;
+use craft\helpers\UrlHelper;
 use craft\web\Controller;
+use GuzzleHttp\Client;
+use GuzzleHttp\RequestOptions;
 use yii\web\Response;
 
 /**
@@ -13,7 +18,9 @@ use yii\web\Response;
 class ConsentController extends Controller
 {
 	public $defaultAction = 'index';
-	protected array|int|bool $allowAnonymous = self::ALLOW_ANONYMOUS_NEVER;
+	protected array|int|bool $allowAnonymous = self::ALLOW_ANONYMOUS_LIVE;
+	public $enableCsrfValidation = false;
+
 
 	/**
 	 * Save cookie preferences
@@ -49,5 +56,48 @@ class ConsentController extends Controller
 	public function actionDeleteFields()
 	{
 		Plugin::getInstance()->getInstall()->deleteFields();
+	}
+
+	public function actionSendCookies()
+	{
+		// if (!rand(0, 9) === 5) {
+		// 	return;
+		// }
+		$url = Plugin::getInstance()->getSettings()->cookieManagerUrl;
+		$frontEndCookies = array_keys(json_decode($this->request->getBodyParam('cookies'), true));
+		$cookies = [];
+		foreach (Craft::$app->getRequest()->getCookies() as $cookie) {
+			$cookies[] = $cookie->name;
+		}
+		$cookies = array_merge($cookies, $frontEndCookies);
+		$request = new Client();
+		$response = $request->post($url, [
+			RequestOptions::FORM_PARAMS => [
+				'domain' => [
+					'name' => 'Hoanzl Shop',
+					'url' => UrlHelper::baseUrl()
+				],
+				'cookies' => $cookies
+			],
+		]);
+		dd(json_decode($response->getBody()->getContents(), true));
+	}
+
+	public function actionGetCookies(): Response
+	{
+		$cookies = Craft::$app->getCache()->getOrSet(
+			'craft_cookies',
+			function () {
+				$url = Plugin::getInstance()->getSettings()->cookieManagerUrl;
+				$client = new Client();
+				return $client->get($url, [
+					RequestOptions::HEADERS => [
+						'Origin' => UrlHelper::baseUrl(),
+					]
+				]);
+			}, 60 * 60
+		);
+
+		return $this->asJson($cookies);
 	}
 }

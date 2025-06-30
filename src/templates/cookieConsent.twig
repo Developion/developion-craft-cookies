@@ -1,0 +1,20 @@
+{% if cookieConsent.getSettings().enableCookieConsent %}
+	{% do view.registerAssetBundle('developion\\craftcookies\\assetbundles\\CookieConsentAsset') %}
+
+	<script>
+		window.cookieConsentSettings = {
+cookieBarPosition: '{{ cookieConsent.getSettings().cookieBarPosition }}',
+cookieBarTitle: '{{ cookieConsent.getSettings().cookieBarTitle }}',
+cookieBarMessage: '{{ cookieConsent.getSettings().cookieBarMessage|e('js') }}',
+essentialCookiesDescription: '{{ cookieConsent.getSettings().essentialCookiesDescription|e('js') }}',
+analyticsCookiesDescription: '{{ cookieConsent.getSettings().analyticsCookiesDescription|e('js') }}',
+marketingCookiesDescription: '{{ cookieConsent.getSettings().marketingCookiesDescription|e('js') }}',
+acceptAllButtonText: '{{ cookieConsent.getSettings().acceptAllButtonText }}',
+savePreferencesButtonText: '{{ cookieConsent.getSettings().savePreferencesButtonText }}',
+cookieSettingsButtonText: '{{ cookieConsent.getSettings().cookieSettingsButtonText }}',
+enableEssentialCookies: {{ cookieConsent.getSettings().enableEssentialCookies ? 'true' : 'false' }},
+enableAnalyticsCookies: {{ cookieConsent.getSettings().enableAnalyticsCookies ? 'true' : 'false' }},
+enableMarketingCookies: {{ cookieConsent.getSettings().enableMarketingCookies ? 'true' : 'false' }}
+};
+	</script>
+{% endif %}

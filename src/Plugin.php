@@ -38,7 +38,7 @@ class Plugin extends BasePlugin
 	{
 		return [
 			'components' => [
-				'cookieConsentService' => CookieConsentService::class,
+				'cookieConsent' => CookieConsentService::class,
 				'install' => Install::class
 			],
 		];
@@ -74,16 +74,6 @@ class Plugin extends BasePlugin
 
 	private function attachEventHandlers(): void
 	{
-		// Event::on(
-		// 	Plugins::class,
-		// 	Plugins::EVENT_BEFORE_UNINSTALL_PLUGIN,
-		// 	function(PluginEvent $event): void {
-		// 		if (!$event->plugin->id == '_craft-cookies') dd('pera');
-		// 		dd($event->plugin->id);
-		// 		$this->getInstall()->deleteFields();
-		// 	}
-		// );
-
 		Event::on(
 			UrlManager::class,
 			UrlManager::EVENT_REGISTER_CP_URL_RULES,

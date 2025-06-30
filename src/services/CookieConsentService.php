@@ -5,6 +5,8 @@ namespace developion\craftcookies\services;
 use developion\craftcookies\models\Settings;
 use developion\craftcookies\Plugin;
 use Craft;
+use craft\helpers\ArrayHelper;
+use developion\craftcookies\records\Cookies;
 use yii\base\Component;
 
 /**
@@ -77,5 +79,16 @@ class CookieConsentService extends Component
 			'httponly' => false,
 			'samesite' => $sameSite
 		]);
+	}
+
+	public function getCookieRecords(): array
+	{
+		return Craft::$app->getCache()->getOrSet(
+			'developion_cookies',
+			function () {
+				return Cookies::find()->select('name')->column();
+			},
+			60 * 60
+		);
 	}
 }
