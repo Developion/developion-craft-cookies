@@ -1,0 +1,38 @@
+@mixin crScreenSize1200 {
+  @media only screen and (max-width: 1200px) {
+    @content;
+  }
+}
+
+@mixin crScreenSize1024 {
+  @media only screen and (max-width: 1024px) {
+    @content;
+  }
+}
+
+@mixin crScreenSize680 {
+  @media only screen and (max-width: 680px) {
+    @content;
+  }
+}
+
+@mixin crScreenSize480 {
+  @media only screen and (max-width: 480px) {
+    @content;
+  }
+}
+
+@keyframes animateCookie {
+    0% {
+        transform: translateX(0) rotate(0deg)
+    }
+    25% {
+         transform: translateX(-20%) rotate(-20deg)
+    }
+    65% {
+         transform: translateX(20%) rotate(20deg)
+    }
+    100% {
+         transform: translateX(0) rotate(0deg)
+    }
+}

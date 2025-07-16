@@ -7,7 +7,7 @@ use developion\craftcookies\models\Settings;
 use developion\craftcookies\services\CookieConsentService;
 use developion\craftcookies\services\Install;
 use developion\craftcookies\traits\Services;
-use developion\craftcookies\web\twig\Extension;
+use developion\craftcookies\Web\Twig\Extension;
 use craft\base\Model;
 use craft\base\Plugin as BasePlugin;
 use craft\events\PluginEvent;
@@ -47,6 +47,10 @@ class Plugin extends BasePlugin
 	public function init(): void
 	{
 		parent::init();
+
+		// if ( !defined('PLUGIN_ROOT_PATH') ) {
+		// 	define('PLUGIN_ROOT_PATH', dirname(__DIR__, 1));
+		// }
 
 		$this->attachEventHandlers();
 

@@ -1,20 +1,39 @@
-{% if cookieConsent.getSettings().enableCookieConsent %}
-	{% do view.registerAssetBundle('developion\\craftcookies\\assetbundles\\CookieConsentAsset') %}
+{% set cookieBar = cookieConsent.getSettings() %}
 
-	<script>
-		window.cookieConsentSettings = {
-cookieBarPosition: '{{ cookieConsent.getSettings().cookieBarPosition }}',
-cookieBarTitle: '{{ cookieConsent.getSettings().cookieBarTitle }}',
-cookieBarMessage: '{{ cookieConsent.getSettings().cookieBarMessage|e('js') }}',
-essentialCookiesDescription: '{{ cookieConsent.getSettings().essentialCookiesDescription|e('js') }}',
-analyticsCookiesDescription: '{{ cookieConsent.getSettings().analyticsCookiesDescription|e('js') }}',
-marketingCookiesDescription: '{{ cookieConsent.getSettings().marketingCookiesDescription|e('js') }}',
-acceptAllButtonText: '{{ cookieConsent.getSettings().acceptAllButtonText }}',
-savePreferencesButtonText: '{{ cookieConsent.getSettings().savePreferencesButtonText }}',
-cookieSettingsButtonText: '{{ cookieConsent.getSettings().cookieSettingsButtonText }}',
-enableEssentialCookies: {{ cookieConsent.getSettings().enableEssentialCookies ? 'true' : 'false' }},
-enableAnalyticsCookies: {{ cookieConsent.getSettings().enableAnalyticsCookies ? 'true' : 'false' }},
-enableMarketingCookies: {{ cookieConsent.getSettings().enableMarketingCookies ? 'true' : 'false' }}
-};
-	</script>
+{% if cookieBar.enableCookieConsent %}
+	{% do view.registerAssetBundle('developion\\craftcookies\\Web\\Assets\\Front\\FrontAsset') %}
+	<div class="cookie-opener-icon">
+		<button>
+			<span>{{ include('_craft-cookies/_svg/cookie-opener') }}</span>
+		</button>
+	</div>
+	<div class="cookie-consent-bar bottom-right">
+		<div class="cookie-image">{{ include('_craft-cookies/_svg/cookie') }}</div>
+		<div class="cookie-consent-content">
+			<div class="cookie-consent-text">
+				<h3>{{ cookieBar.cookieBarTitle }}</h3>
+				{# <p>{{ cookieBar.cookieBarMessage }}</p> #}
+				<p>Wir verwenden notwendige Cookies, um dir eine perfekte Website-Erfahrung zu bieten.
+				Zusätzlich würden wir gerne weitere Cookies einsetzen, um die Leistung unserer
+				Website zu analysieren und Informationen für dich zu
+				personalisieren – aber nur, wenn du zustimmst.
+				Mehr über deine Auswahlmöglichkeiten erfährst du in unserer <a href="#">Cookie-Richtlinie</a>.</p>
+				<div class="cookie-consent-buttons">
+					<button class="cookie-consent-button primary" data-action="deny-all">
+						<span>{{ 'Deny'|t }}</span>
+					</button>
+					<button class="cookie-consent-button secondary" data-action="open-settings">
+						<span>{{ cookieBar.cookieSettingsButtonText }}</span>
+					</button>
+					<button class="cookie-consent-button primary" data-action="accept-all">
+						<span>{{ cookieBar.acceptAllButtonText }}</span>
+					</button>
+				</div>
+			</div>
+			<div class="cookie-consent-footer">
+				<p>Powered by <a href="#">ContentReactor</a></p>
+			</div>
+		</div>
+		{{ include('_craft-cookies/_settingsPanel') }}
+	</div>
 {% endif %}
