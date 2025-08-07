@@ -5,15 +5,12 @@ namespace developion\craftcookies;
 use Craft;
 use developion\craftcookies\models\Settings;
 use developion\craftcookies\services\CookieConsentService;
-use developion\craftcookies\services\Install;
 use developion\craftcookies\traits\Services;
 use developion\craftcookies\Web\Twig\Extension;
 use craft\base\Model;
 use craft\base\Plugin as BasePlugin;
-use craft\events\PluginEvent;
 use craft\events\RegisterTemplateRootsEvent;
 use craft\events\RegisterUrlRulesEvent;
-use craft\services\Plugins;
 use craft\web\UrlManager;
 use craft\web\View;
 use yii\base\Event;
@@ -24,7 +21,6 @@ use yii\base\Event;
  * @method static Plugin getInstance()
  * @method Settings getSettings()
  * @property-read CookieConsentService $cookieConsentService
- * @property-read Install $install
  */
 class Plugin extends BasePlugin
 {
@@ -39,7 +35,6 @@ class Plugin extends BasePlugin
 		return [
 			'components' => [
 				'cookieConsent' => CookieConsentService::class,
-				'install' => Install::class
 			],
 		];
 	}
@@ -47,18 +42,10 @@ class Plugin extends BasePlugin
 	public function init(): void
 	{
 		parent::init();
-
-		// if ( !defined('PLUGIN_ROOT_PATH') ) {
-		// 	define('PLUGIN_ROOT_PATH', dirname(__DIR__, 1));
-		// }
-
 		$this->attachEventHandlers();
 
-		// Any code that creates an element query or loads Twig should be deferred until
-		// after Craft is fully initialized, to avoid conflicts with other plugins/modules
 		Craft::$app->onInit(function () {
-			// $this->getInstall()->generateGlobalSet();
-			// $this->getInstall()->deleteFields();
+
 		});
 		Craft::$app->view->registerTwigExtension(new Extension());
 	}
