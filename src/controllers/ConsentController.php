@@ -4,8 +4,6 @@ namespace developion\craftcookies\controllers;
 
 use developion\craftcookies\Plugin;
 use Craft;
-use craft\helpers\App;
-use craft\helpers\ArrayHelper;
 use craft\helpers\UrlHelper;
 use craft\web\Controller;
 use GuzzleHttp\Client;
@@ -17,10 +15,7 @@ use yii\web\Response;
  */
 class ConsentController extends Controller
 {
-	public $defaultAction = 'index';
 	protected array|int|bool $allowAnonymous = self::ALLOW_ANONYMOUS_LIVE;
-	public $enableCsrfValidation = false;
-
 
 	/**
 	 * Save cookie preferences
@@ -30,7 +25,6 @@ class ConsentController extends Controller
 	public function actionSavePreferences(): Response
 	{
 		$this->requirePostRequest();
-
 		$request = Craft::$app->getRequest();
 
 		$preferences = [
@@ -70,8 +64,8 @@ class ConsentController extends Controller
 			$cookies[] = $cookie->name;
 		}
 		$cookies = array_merge($cookies, $frontEndCookies);
-		$request = new Client();
-		$response = $request->post($url, [
+		$request = new Client(['base_uri' => $url]);
+		$response = $request->post('/api/cookies', [
 			RequestOptions::FORM_PARAMS => [
 				'domain' => [
 					'name' => 'Hoanzl Shop',
@@ -80,23 +74,12 @@ class ConsentController extends Controller
 				'cookies' => $cookies
 			],
 		]);
-		dd(json_decode($response->getBody()->getContents(), true));
+		// dd(json_decode($response->getBody()->getContents(), true));
 	}
 
 	public function actionGetCookies(): Response
 	{
-		$cookies = Craft::$app->getCache()->getOrSet(
-			'craft_cookies',
-			function () {
-				$url = Plugin::getInstance()->getSettings()->cookieManagerUrl;
-				$client = new Client();
-				return $client->get($url, [
-					RequestOptions::HEADERS => [
-						'Origin' => UrlHelper::baseUrl(),
-					]
-				]);
-			}, 60 * 60
-		);
+		$cookies = Plugin::getInstance()->getCookieConsent()->getCookies();
 
 		return $this->asJson($cookies);
 	}

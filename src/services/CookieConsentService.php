@@ -5,9 +5,11 @@ namespace developion\craftcookies\services;
 use developion\craftcookies\models\Settings;
 use developion\craftcookies\Plugin;
 use Craft;
-use craft\helpers\ArrayHelper;
-use developion\craftcookies\records\Cookies;
+use craft\helpers\UrlHelper;
+use GuzzleHttp\Client;
+use GuzzleHttp\RequestOptions;
 use yii\base\Component;
+use yii\web\Cookie;
 
 /**
  * Cookie Consent Service service
@@ -66,29 +68,63 @@ class CookieConsentService extends Component
 		return isset($_COOKIE[$prefix . 'consent']) && $_COOKIE[$prefix . 'consent'] === 'true';
 	}
 
-	public function setCookie(string $name, string $value, int $expiration): bool
+	public function setCookie(string $name, string $value, int $expiration)
 	{
 		$secure = Craft::$app->getRequest()->getIsSecureConnection();
-		$sameSite = 'Strict';
-
-		return setcookie($name, $value, [
-			'expires' => $expiration,
+		return Craft::$app->getResponse()->getCookies()->add(new Cookie([
+			'name' => $name,
+			'value' => $value,
 			'path' => '/',
 			'domain' => '',
 			'secure' => $secure,
-			'httponly' => false,
-			'samesite' => $sameSite
-		]);
+			'httpOnly' => true,
+			'sameSite' => null
+		]));
 	}
 
-	public function getCookieRecords(): array
+	public function getCookieCategories(): string
 	{
-		return Craft::$app->getCache()->getOrSet(
-			'developion_cookies',
-			function () {
-				return Cookies::find()->select('name')->column();
-			},
-			60 * 60
+		// return Craft::$app->getCache()->getOrSet(
+		// 	'craft_cookies',
+		// 	function () {
+				$url = Plugin::getInstance()->getSettings()->cookieManagerUrl;
+
+				$client = new Client(['base_uri' => $url]);
+				return $client->get("/api/categories", [
+					RequestOptions::HEADERS => [
+						'Origin' => UrlHelper::baseUrl(),
+					]
+				])
+				->getBody()->getContents();
+		// 	}, 60 * 60
+		// );
+
+	}
+
+	public function getCookies(): string
+	{
+		// return Craft::$app->getCache()->getOrSet(
+		// 	'craft_cookies',
+		// 	function () {
+				$url = Plugin::getInstance()->getSettings()->cookieManagerUrl;
+
+				$client = new Client(['base_uri' => $url]);
+				return $client->get("/api/cookies", [
+					RequestOptions::HEADERS => [
+						'Origin' => UrlHelper::baseUrl(),
+					]
+				])
+				->getBody()->getContents();
+		// 	}, 60 * 60
+		// );
+
+	}
+
+	public function checkConsent(): bool
+	{
+		dd(
+			$_COOKIE,
+			Craft::$app->getRequest()->getCookies()
 		);
 	}
 }

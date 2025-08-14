@@ -1,3 +1,6 @@
+{% set categories = cookieConsent.getCookieConsent().getCookieCategories()|json_decode() %}
+{% set cookies = cookieConsent.getCookieConsent().getCookies()|json_decode %}
+{# {% set var = cookieConsent.getCookieConsent().checkConsent() %} #}
 <div class="cookie-settings-panel">
 	<div class="cookie-settings-content">
 		<button class="cookie-settings-close" data-action="close-settings">{{ include('_craft-cookies/_svg/close') }}</button>
@@ -26,50 +29,35 @@
 					<p>Google</p>
 				</div>
 			</div>
-			<div class="cookie-category">
-				<div class="cookie-category-header">
-					<div class="cookie-category-title">Analytics Cookies</div>
-					<label class="cookie-category-toggle">
-						<input type="checkbox" data-category="analytics">
-						<span class="cookie-category-slider">
-							<span class="cookie-icon check-icon">{{ include('_craft-cookies/_svg/checkmark') }}</span>
-							<span class="cookie-icon close-icon">{{ include('_craft-cookies/_svg/close') }}</span>
-						</span>
-					</label>
-					<button class="category-dropdown-opener">
-						<span>{{ include('_craft-cookies/_svg/caret-down') }}</span>
-					</button>
+			{% for key, item in cookies %}
+				{% if key === '' %}
+					{% set key = 'Uncategorized' %}
+				{% endif %}
+				<div class="cookie-category">
+					<div class="cookie-category-header">
+						<div class="cookie-category-title">{{ key }} Cookies</div>
+						<label class="cookie-category-toggle">
+							<input type="checkbox" data-category="{{ item.handle }}">
+							<span class="cookie-category-slider">
+								<span class="cookie-icon check-icon">{{ include('_craft-cookies/_svg/checkmark') }}</span>
+								<span class="cookie-icon close-icon">{{ include('_craft-cookies/_svg/close') }}</span>
+							</span>
+						</label>
+						<button class="category-dropdown-opener">
+							<span>{{ include('_craft-cookies/_svg/caret-down') }}</span>
+						</button>
+					</div>
+					<div class="cookie-category-description">{{ item.description }}</div>
+					<div class="category-services-list">
+						{% if item.vendors %}
+							{% for vendor in item.vendors %}
+								{{ vendor|raw }}
+							{% endfor %}
+						{% endif %}
+
+					</div>
 				</div>
-				<div class="cookie-category-description">Analytics cookies help us understand how visitors interact with our website.</div>
-				<div class="category-services-list">
-					<p>Amazon Web Service</p>
-					<p>Youtube</p>
-					<p>Facebook pixel</p>
-					<p>Google</p>
-				</div>
-			</div>
-			<div class="cookie-category">
-				<div class="cookie-category-header">
-					<div class="cookie-category-title">Marketing Cookies</div>
-					<label class="cookie-category-toggle">
-						<input type="checkbox" data-category="marketing">
-						<span class="cookie-category-slider">
-							<span class="cookie-icon check-icon">{{ include('_craft-cookies/_svg/checkmark') }}</span>
-							<span class="cookie-icon close-icon">{{ include('_craft-cookies/_svg/close') }}</span>
-						</span>
-					</label>
-					<button class="category-dropdown-opener">
-						<span>{{ include('_craft-cookies/_svg/caret-down') }}</span>
-					</button>
-				</div>
-				<div class="cookie-category-description">Marketing cookies are used to track visitors across websites to display relevant advertisements.</div>
-				<div class="category-services-list">
-					<p>Amazon Web Service</p>
-					<p>Youtube</p>
-					<p>Facebook pixel</p>
-					<p>Google</p>
-				</div>
-			</div>
+			{% endfor %}
 		</div>
 		<div class="cookie-settings-footer">
 			<button class="cookie-consent-button primary" data-action="save-preferences">Save Preferences</button>

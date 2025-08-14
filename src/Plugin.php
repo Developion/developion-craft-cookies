@@ -3,16 +3,20 @@
 namespace developion\craftcookies;
 
 use Craft;
+use craft\base\Model;
+use craft\base\Plugin as BasePlugin;
+use craft\events\DefineInputOptionsEvent;
+use craft\events\RegisterComponentTypesEvent;
+use craft\events\RegisterTemplateRootsEvent;
+use craft\events\RegisterUrlRulesEvent;
+use craft\services\Fields;
+use craft\web\UrlManager;
+use craft\web\View;
+use developion\craftcookies\Web\Twig\Extension;
+use developion\craftcookies\fields\CookieCategory;
 use developion\craftcookies\models\Settings;
 use developion\craftcookies\services\CookieConsentService;
 use developion\craftcookies\traits\Services;
-use developion\craftcookies\Web\Twig\Extension;
-use craft\base\Model;
-use craft\base\Plugin as BasePlugin;
-use craft\events\RegisterTemplateRootsEvent;
-use craft\events\RegisterUrlRulesEvent;
-use craft\web\UrlManager;
-use craft\web\View;
 use yii\base\Event;
 
 /**
@@ -44,9 +48,7 @@ class Plugin extends BasePlugin
 		parent::init();
 		$this->attachEventHandlers();
 
-		Craft::$app->onInit(function () {
-
-		});
+		Craft::$app->onInit(function () {});
 		Craft::$app->view->registerTwigExtension(new Extension());
 	}
 
@@ -90,6 +92,13 @@ class Plugin extends BasePlugin
 				}
 			);
 		}
+
+		Event::on(
+			Fields::class,
+			Fields::EVENT_REGISTER_FIELD_TYPES,
+			function (RegisterComponentTypesEvent $event) {
+				$event->types[] = CookieCategory::class;
+		});
 	}
 
 	public function getCpNavItem(): ?array

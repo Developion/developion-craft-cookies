@@ -106,23 +106,18 @@ import './gtag';
     const expiration = new Date();
     expiration.setFullYear(expiration.getFullYear() + 1);
 
-    setCookie('cookieConsent_consent', 'true', expiration);
-    setCookie('cookieConsent_essential', 'true', expiration);
-    setCookie('cookieConsent_analytics', preferences.analytics ? 'true' : 'false', expiration);
-    setCookie('cookieConsent_marketing', preferences.marketing ? 'true' : 'false', expiration);
-
     const formData = new FormData();
     formData.append('analytics', preferences.analytics ? '1' : '0');
     formData.append('marketing', preferences.marketing ? '1' : '0');
+	formData.append(window.craftCookies.csrfParam, window.craftCookies.csrfToken)
+	formData.append('action', '_craft-cookies/consent/save-preferences')
 
-    fetch('/actions/_craft-cookies/consent/save-preferences', {
+    fetch(location.origin, {
       method: 'POST',
       body: formData,
-      headers: {
-        'X-CSRF-Token': getCsrfToken(),
-        'X-Requested-With': 'XMLHttpRequest'
-      }
-    }).catch(error => console.error('Error saving cookie preferences:', error));
+    })
+	.then(response => response.json()) //delete after debugging
+	.catch(error => console.error('Error saving cookie preferences:', error));
 
     document.dispatchEvent(new CustomEvent('cookieConsentUpdated', {
       detail: { preferences, status }
@@ -164,10 +159,13 @@ import './gtag';
   function sendCookies() {
     const formData = new FormData();
     formData.append('cookies', JSON.stringify(getAllCookies()));
-    fetch('/actions/_craft-cookies/consent/send-cookies', {
+	formData.append(window.craftCookies.csrfParam, window.craftCookies.csrfToken)
+	formData.append('action', '_craft-cookies/consent/send-cookies')
+    fetch(location.origin, {
       method: 'POST',
       body: formData
-    });
+    })
+	.then(response => response.json()) //delete after debugging
   }
 
   function getAllCookies() {
