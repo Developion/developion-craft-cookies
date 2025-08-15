@@ -26,7 +26,6 @@ class ConsentController extends Controller
 	{
 		$this->requirePostRequest();
 		$request = Craft::$app->getRequest();
-
 		$preferences = [
 			'essential' => true, // Essential cookies are always enabled
 			'analytics' => (bool)$request->getParam('analytics', false),

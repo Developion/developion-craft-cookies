@@ -6,6 +6,7 @@ use Craft;
 use craft\helpers\Json;
 use craft\Web\AssetBundle;
 use craft\web\View;
+use developion\craftcookies\Plugin;
 use developion\craftcookies\Web\Assets\Font\FontAsset;
 
 class FrontAsset extends AssetBundle
@@ -37,6 +38,7 @@ class FrontAsset extends AssetBundle
 		$json = Json::encode([
 			'csrfParam' => Craft::$app->getRequest()->csrfParam,
 			'csrfToken' => Craft::$app->getRequest()->csrfToken,
+			'cookieNamePrefix' => Plugin::getInstance()->getSettings()->cookieNamePrefix,
 		]);
 
 		$js = <<<JS

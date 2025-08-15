@@ -30,7 +30,6 @@ class CookieConsentService extends Component
 
 		$preferences['essential'] = true;
 
-		$this->setCookie($prefix . 'consent', 'true', $expiration);
 		$this->setCookie($prefix . 'essential', 'true', $expiration);
 		$this->setCookie($prefix . 'analytics', $preferences['analytics'] ? 'true' : 'false', $expiration);
 		$this->setCookie($prefix . 'marketing', $preferences['marketing'] ? 'true' : 'false', $expiration);

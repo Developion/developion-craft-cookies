@@ -1,178 +1,176 @@
 import './gtag';
 
 (function () {
-  const consentBar = document.querySelector('.cookie-consent-bar');
-  const cookieOpener = document.querySelector('.cookie-opener-icon');
+	const consentBar = document.querySelector('.cookie-consent-bar');
+	const cookieOpener = document.querySelector('.cookie-opener-icon');
+	let categories = [...document.querySelectorAll('[data-cookie-category]')].map(item => item.getAttribute('data-cookie-category'))
+	categories.unshift('essential')
 
-  document.addEventListener('DOMContentLoaded', initCookieBar);
+	document.addEventListener('DOMContentLoaded', initCookieBar);
 
-  function initCookieBar() {
-    sendCookies();
+	function initCookieBar() {
+		sendCookies();
+		if (!hasConsent()) {
+			showConsentBar();
+			animateCookie();
+			document.dispatchEvent(new CustomEvent('cookieConsentOnLoad'));
+		} else {
+			showCookieOpener();
+		}
 
-    if (!hasConsent()) {
-      showConsentBar();
-      animateCookie();
-      document.dispatchEvent(new CustomEvent('cookieConsentOnLoad'));
-    } else {
-      showCookieOpener();
-    }
+		if (!window.__cookieConsentInitialized) {
+			window.__cookieConsentInitialized = true;
+			initializeEventListeners();
+		}
+	}
 
-    if (!window.__cookieConsentInitialized) {
-      window.__cookieConsentInitialized = true;
-      initializeEventListeners();
-    }
-  }
+	function hasConsent() {
+		return document.cookie.split('; ').some(cookie => cookie.startsWith(`${window.craftCookies.cookieNamePrefix}consent`));
+	}
 
-  function hasConsent() {
-    return getCookie('cookieConsent_consent') === 'true';
-  }
+	function animateCookie() {
+		const cookieImage = document.querySelector('.cookie-consent-bar .cookie-image');
+		if (!cookieImage) return;
+		cookieImage.classList.add('animate');
+		setTimeout(() => cookieImage.classList.remove('animate'), 2000);
+	}
 
-  function animateCookie() {
-    const cookieImage = document.querySelector('.cookie-consent-bar .cookie-image');
-    if (!cookieImage) return;
-    cookieImage.classList.add('animate');
-    setTimeout(() => cookieImage.classList.remove('animate'), 2000);
-  }
+	function showCookieOpener() {
+		if (cookieOpener) cookieOpener.style.display = 'flex';
+	}
 
-  function showCookieOpener() {
-    if (cookieOpener) cookieOpener.style.display = 'flex';
-  }
+	function mapCategoryValues(categories, status = null) {
+		return categories.reduce((acc, item) => {
+			let value
+			if (item !== 'essential') {
+				switch (status) {
+					case 'ACCEPT_ALL':
+						value = true
+						break
+					case 'DENY_ALL':
+						value = false
+						break
+					default:
+						value = document.querySelector(`input[data-cookie-category="${item}"]`).checked
+						break
+				}
+			}
+			acc[item] = value
+			acc['essential'] = true
+			return acc
+	}, { })
 
-  function initializeEventListeners() {
-    bindConsentAction('[data-action="accept-all"]', {
-      essential: true,
-      analytics: true,
-      marketing: true
-    }, 'ACCEPT_ALL');
+}
 
-    bindConsentAction('[data-action="deny-all"]', {
-      essential: true,
-      analytics: false,
-      marketing: false
-    }, 'DENY_ALL');
+	function initializeEventListeners() {
+	bindConsentAction('[data-action="accept-all"]', mapCategoryValues(categories, 'ACCEPT_ALL'), 'ACCEPT_ALL');
 
-    bindClick('[data-action="open-settings"]', showSettingsPanel);
-    bindClick('[data-action="close-settings"]', hideSettingsPanel);
+	bindConsentAction('[data-action="deny-all"]', mapCategoryValues(categories, 'DENY_ALL'), 'DENY_ALL');
 
-    document.querySelectorAll('[data-action="save-preferences"]').forEach(button => {
-      button.addEventListener('click', () => {
-        const preferences = {
-          essential: true,
-          analytics: document.querySelector('input[data-category="analytics"]').checked,
-          marketing: document.querySelector('input[data-category="marketing"]').checked
-        };
-        saveConsent(preferences, 'UPDATE');
-        hideSettingsPanel();
-        hideConsentBar();
-      });
-    });
+	bindClick('[data-action="open-settings"]', showSettingsPanel);
+	bindClick('[data-action="close-settings"]', hideSettingsPanel);
 
-    document.querySelectorAll('.category-dropdown-opener').forEach(button => {
-      button.addEventListener('click', e => {
-        const holder = e.target.closest('.cookie-category');
-        const list = holder.querySelector('.category-services-list');
-        const expanded = holder.classList.toggle('expanded');
-        list.style.maxHeight = expanded ? `${list.scrollHeight}px` : '0px';
-        return false;
-      });
-    });
+	document.querySelectorAll('[data-action="save-preferences"]').forEach(button => {
+		button.addEventListener('click', () => {
+			saveConsent(mapCategoryValues(categories), 'UPDATE');
+			hideSettingsPanel();
+			hideConsentBar();
+		});
+	});
 
-    const toggleButton = document.querySelector('.cookie-opener-icon button');
-    if (toggleButton) {
-      toggleButton.addEventListener('click', () => {
-        consentBar.classList.toggle('show');
-        return false;
-      });
-    }
-  }
+	document.querySelectorAll('.category-dropdown-opener').forEach(button => {
+		button.addEventListener('click', e => {
+			const holder = e.target.closest('.cookie-category');
+			const list = holder.querySelector('.category-services-list');
+			const expanded = holder.classList.toggle('expanded');
+			list.style.maxHeight = expanded ? `${list.scrollHeight}px` : '0px';
+			return false;
+		});
+	});
 
-  function bindConsentAction(selector, preferences, status) {
-    document.querySelectorAll(selector).forEach(button => {
-      button.addEventListener('click', () => {
-        saveConsent(preferences, status);
-        hideConsentBar();
-        showCookieOpener();
-      });
-    });
-  }
+	const toggleButton = document.querySelector('.cookie-opener-icon button');
+	if (toggleButton) {
+		toggleButton.addEventListener('click', () => {
+			consentBar.classList.toggle('show');
+			return false;
+		});
+	}
+}
 
-  function bindClick(selector, callback) {
-    document.querySelectorAll(selector).forEach(button => {
-      button.addEventListener('click', callback);
-    });
-  }
+function bindConsentAction(selector, preferences, status) {
+	document.querySelectorAll(selector).forEach(button => {
+		button.addEventListener('click', () => {
+			saveConsent(preferences, status);
+			hideConsentBar();
+			showCookieOpener();
+		});
+	});
+}
 
-  function saveConsent(preferences, status) {
-    const expiration = new Date();
-    expiration.setFullYear(expiration.getFullYear() + 1);
+function bindClick(selector, callback) {
+	document.querySelectorAll(selector).forEach(button => {
+		button.addEventListener('click', callback);
+	});
+}
 
-    const formData = new FormData();
-    formData.append('analytics', preferences.analytics ? '1' : '0');
-    formData.append('marketing', preferences.marketing ? '1' : '0');
+function saveConsent(preferences, status) {
+	const formData = new FormData();
+	Object.entries(preferences).forEach(([key, value]) => {
+		formData.append(key, value ? '1' : '0')
+	})
 	formData.append(window.craftCookies.csrfParam, window.craftCookies.csrfToken)
 	formData.append('action', '_craft-cookies/consent/save-preferences')
 
-    fetch(location.origin, {
-      method: 'POST',
-      body: formData,
-    })
-	.then(response => response.json()) //delete after debugging
-	.catch(error => console.error('Error saving cookie preferences:', error));
+	fetch(location.origin, {
+		method: 'POST',
+		body: formData,
+	})
+		.then(response => response.json())
+		.then(data => {
+			const expiration = new Date()
+			expiration.setFullYear(expiration.getFullYear() + 1);
+			document.cookie = `${window.craftCookies.cookieNamePrefix}consent=${encodeURIComponent(true)}; expires=${expiration.toUTCString()}; path=/; SameSite=Lax`;
+		})
+		.catch(error => console.error('Error saving cookie preferences:', error));
 
-    document.dispatchEvent(new CustomEvent('cookieConsentUpdated', {
-      detail: { preferences, status }
-    }));
-  }
+	document.dispatchEvent(new CustomEvent('cookieConsentUpdated', {
+		detail: { preferences, status }
+	}));
+}
 
-  function getCsrfToken() {
-    const meta = document.querySelector('meta[name="csrf-token"]');
-    return meta ? meta.getAttribute('content') : '';
-  }
+function showConsentBar() {
+	consentBar?.classList.add('show');
+}
 
-  function showConsentBar() {
-    consentBar?.classList.add('show');
-  }
+function hideConsentBar() {
+	consentBar?.classList.remove('show');
+}
 
-  function hideConsentBar() {
-    consentBar?.classList.remove('show');
-  }
+function showSettingsPanel() {
+	consentBar?.classList.add('show-settings');
+}
 
-  function showSettingsPanel() {
-    consentBar?.classList.add('show-settings');
-  }
+function hideSettingsPanel() {
+	consentBar?.classList.remove('show-settings');
+}
 
-  function hideSettingsPanel() {
-    consentBar?.classList.remove('show-settings');
-  }
-
-  function setCookie(name, value, expires) {
-    document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
-  }
-
-  function getCookie(name) {
-    return document.cookie.split('; ').reduce((acc, pair) => {
-      const [key, val] = pair.split('=');
-      return key === name ? decodeURIComponent(val) : acc;
-    }, null);
-  }
-
-  function sendCookies() {
-    const formData = new FormData();
-    formData.append('cookies', JSON.stringify(getAllCookies()));
+function sendCookies() {
+	const formData = new FormData();
+	formData.append('cookies', JSON.stringify(getAllCookies()));
 	formData.append(window.craftCookies.csrfParam, window.craftCookies.csrfToken)
 	formData.append('action', '_craft-cookies/consent/send-cookies')
-    fetch(location.origin, {
-      method: 'POST',
-      body: formData
-    })
-	.then(response => response.json()) //delete after debugging
-  }
+	fetch(location.origin, {
+		method: 'POST',
+		body: formData
+	})
+		.then(response => response.json()) //delete after debugging
+}
 
-  function getAllCookies() {
-    return document.cookie.split('; ').reduce((acc, cookie) => {
-      const [key, val] = cookie.split('=');
-      acc[decodeURIComponent(key)] = decodeURIComponent(val);
-      return acc;
-    }, {});
-  }
-})();
+function getAllCookies() {
+	return document.cookie.split('; ').reduce((acc, cookie) => {
+		const [key, val] = cookie.split('=');
+		acc[decodeURIComponent(key)] = decodeURIComponent(val);
+		return acc;
+	}, {});
+}
+}) ();
