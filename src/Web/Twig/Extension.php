@@ -6,6 +6,7 @@ use developion\craftcookies\Plugin;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
 use Twig\TwigFilter;
+use Twig\TwigFunction;
 
 /**
  * Twig extension
@@ -31,6 +32,8 @@ class Extension extends AbstractExtension implements GlobalsInterface
 
 	public function getFunctions()
 	{
-		return [];
+		return [
+			new TwigFunction('hasConsentFor', Plugin::getInstance()->getCookieConsent()->hasConsentFor(...)),
+		];
 	}
 }

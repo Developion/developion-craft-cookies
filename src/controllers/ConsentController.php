@@ -25,37 +25,20 @@ class ConsentController extends Controller
 	public function actionSavePreferences(): Response
 	{
 		$this->requirePostRequest();
-		$request = Craft::$app->getRequest();
-		$preferences = [
-			'essential' => true, // Essential cookies are always enabled
-			'analytics' => (bool)$request->getParam('analytics', false),
-			'marketing' => (bool)$request->getParam('marketing', false),
-		];
+		$request = Craft::$app->getRequest()->getBodyParams();
+		unset($request['CRAFT_CSRF_TOKEN']);
+		unset($request['action']);
 
-		Plugin::getInstance()->getCookieConsent()->savePreferences($preferences);
+		Plugin::getInstance()->getCookieConsent()->savePreferences($request);
 
-		if ($request->getAcceptsJson()) {
-			return $this->asJson(['success' => true]);
-		}
-
-		return $this->redirectToPostedUrl();
-	}
-
-	public function actionTestFields()
-	{
-		Plugin::getInstance()->getInstall()->generateGlobalSet();
-	}
-
-	public function actionDeleteFields()
-	{
-		Plugin::getInstance()->getInstall()->deleteFields();
+		return $this->asJson(['success' => true]);
 	}
 
 	public function actionSendCookies()
 	{
-		// if (!rand(0, 9) === 5) {
-		// 	return;
-		// }
+		if (!rand(0, 9) === 5) {
+			return;
+		}
 		$url = Plugin::getInstance()->getSettings()->cookieManagerUrl;
 		$frontEndCookies = array_keys(json_decode($this->request->getBodyParam('cookies'), true));
 		$cookies = [];
@@ -73,7 +56,8 @@ class ConsentController extends Controller
 				'cookies' => $cookies
 			],
 		]);
-		// dd(json_decode($response->getBody()->getContents(), true));
+
+		return $this->asJson(['success' => true]);
 	}
 
 	public function actionGetCookies(): Response

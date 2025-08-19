@@ -116,7 +116,7 @@ function bindClick(selector, callback) {
 function saveConsent(preferences, status) {
 	const formData = new FormData();
 	Object.entries(preferences).forEach(([key, value]) => {
-		formData.append(key, value ? '1' : '0')
+		formData.append(key, value ? 'true' : 'false')
 	})
 	formData.append(window.craftCookies.csrfParam, window.craftCookies.csrfToken)
 	formData.append('action', '_craft-cookies/consent/save-preferences')

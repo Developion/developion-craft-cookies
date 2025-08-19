@@ -1,6 +1,6 @@
 {% set categories = cookieConsent.getCookieConsent().getCookieCategories()|json_decode %}
 {% set cookies = cookieConsent.getCookieConsent().getCookies()|json_decode %}
-{# {% set var = cookieConsent.getCookieConsent().checkConsent() %} #}
+
 <div class="cookie-settings-panel">
 	<div class="cookie-settings-content">
 		<button class="cookie-settings-close" data-action="close-settings">{{ include('_craft-cookies/_svg/close') }}</button>
