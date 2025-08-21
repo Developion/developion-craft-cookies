@@ -29,7 +29,7 @@ class CookieConsentService extends Component
 		$expiration = time() + ($settings->cookieExpiration * 86400);
 
 		foreach ($preferences as $preference => $value) {
-			if ($preference === "essential") $value = true;
+			if ($preference === 'essential') $value = true;
 			$this->setCookie($prefix . $preference, filter_var($value, FILTER_VALIDATE_BOOLEAN), $expiration);
 		}
 
@@ -43,7 +43,7 @@ class CookieConsentService extends Component
 
 		return Craft::$app->getRequest()
 			->getCookies()
-			->getValue($prefix . $category)
+			->getValue($prefix . $category) ?? false
 		;
 	}
 
@@ -71,7 +71,7 @@ class CookieConsentService extends Component
 				$client = new Client(['base_uri' => $url]);
 				return $client->get("/api/categories", [
 					RequestOptions::HEADERS => [
-						'Origin' => UrlHelper::baseUrl(),
+						'Origin' => UrlHelper::baseSiteUrl(),
 					]
 				])
 				->getBody()->getContents();
@@ -90,7 +90,7 @@ class CookieConsentService extends Component
 				$client = new Client(['base_uri' => $url]);
 				return $client->get("/api/cookies", [
 					RequestOptions::HEADERS => [
-						'Origin' => UrlHelper::baseUrl(),
+						'Origin' => UrlHelper::baseSiteUrl(),
 					]
 				])
 				->getBody()->getContents();

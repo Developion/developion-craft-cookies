@@ -50,8 +50,8 @@ class ConsentController extends Controller
 		$response = $request->post('/api/cookies', [
 			RequestOptions::FORM_PARAMS => [
 				'domain' => [
-					'name' => 'Hoanzl Shop',
-					'url' => UrlHelper::baseUrl()
+					'name' => Craft::$app->getSystemName(),
+					'url' => UrlHelper::baseSiteUrl()
 				],
 				'cookies' => $cookies
 			],

@@ -16,11 +16,6 @@ class CookieCategory extends Field
 	public $dropdownOptions = '';
 	public string $columnType = 'text';
 
-	// public function getContentColumnType(): string
-	// {
-	// 	return 'text';
-	// }
-
 	public function init(): void
 	{
 		parent::init();
@@ -38,6 +33,7 @@ class CookieCategory extends Field
 
 	public function normalizeValue($value, ElementInterface $element = null): string
 	{
+		$this->dropdownOptions = Plugin::getInstance()->getCookieConsent()->getCookieCategories();
 		$view = Craft::$app->getView();
 		$templateMode = $view->getTemplateMode();
 		$view->setTemplateMode($view::TEMPLATE_MODE_SITE);
@@ -49,13 +45,13 @@ class CookieCategory extends Field
 
 		$view->setTemplateMode($templateMode);
 
-		if (!$value && $this->isFresh($element)) :
-			foreach ($options as $key => $option) :
-				if (!empty($option['default'])) :
+		if (!$value && $this->isFresh($element)){
+			foreach ($options as $key => $option) {
+				if (!empty($option['default'])){
 					$value = $option['value'];
-				endif;
-			endforeach;
-		endif;
+				}
+			}
+		}
 
 		return (is_null($value) ? '' : $value);
 	}
