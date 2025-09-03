@@ -3,7 +3,10 @@
 
 <div class="cookie-settings-panel">
 	<div class="cookie-settings-content">
-		<button class="cookie-settings-close" data-action="close-settings">{{ include('_craft-cookies/_svg/close') }}</button>
+		<button class="cookie-settings-close" data-action="close-settings">
+			{{ include('_craft-cookies/_svg/close') }}
+			<span class="sr-only">{{ 'Close Settings'|t }}</span>
+		</button>
 		<div class="cookie-settings-header">
 			<h3>Cookie Settings</h3>
 		</div>
@@ -12,6 +15,7 @@
 				<div class="cookie-category-header">
 					<div class="cookie-category-title">Essential Cookies</div>
 					<label class="cookie-category-toggle disabled">
+						<span class="sr-only">{{ 'Essential'|t }}</span>
 						<input type="checkbox" disabled="" data-category="essential">
 						<span class="cookie-category-slider">
 							<span class="cookie-icon check-icon">{{ include('_craft-cookies/_svg/checkmark') }}</span>
@@ -19,6 +23,7 @@
 					</label>
 					<button class="category-dropdown-opener">
 						<span>{{ include('_craft-cookies/_svg/caret-down') }}</span>
+						<span class="sr-only">{{ 'Open category dropdown' }}</span>
 					</button>
 				</div>
 				<div class="cookie-category-description">Essential cookies are necessary for the website to function properly. They cannot be disabled.</div>
@@ -37,6 +42,7 @@
 					<div class="cookie-category-header">
 						<div class="cookie-category-title">{{ key }} Cookies</div>
 						<label class="cookie-category-toggle">
+							<span class="sr-only">{{ key }} Cookies</span>
 							<input type="checkbox" data-cookie-category="{{ item.handle ?? 'uncategorized' }}">
 							<span class="cookie-category-slider">
 								<span class="cookie-icon check-icon">{{ include('_craft-cookies/_svg/checkmark') }}</span>
@@ -45,6 +51,7 @@
 						</label>
 						<button class="category-dropdown-opener">
 							<span>{{ include('_craft-cookies/_svg/caret-down') }}</span>
+							<span class="sr-only">{{ 'Open category dropdown' }}</span>
 						</button>
 					</div>
 					<div class="cookie-category-description">{{ item.description|raw }}</div>
