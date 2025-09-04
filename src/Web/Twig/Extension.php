@@ -2,6 +2,7 @@
 
 namespace developion\craftcookies\Web\Twig;
 
+use Craft;
 use developion\craftcookies\Plugin;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
@@ -41,6 +42,10 @@ class Extension extends AbstractExtension implements GlobalsInterface
 				$callable = $function->getCallable();
 				return $callable(...$args);
 			}, ['needs_environment' => true]),
+			new TwigFunction('checkCookie', function(?string $name): ?bool {
+				$cookiePrefix = Plugin::getInstance()->getSettings()->cookieNamePrefix;
+				return Craft::$app->getRequest()->getCookies()->get("$cookiePrefix$name")?->value;
+			})
 		];
 	}
 }
