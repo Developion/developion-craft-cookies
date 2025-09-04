@@ -3,6 +3,7 @@
 namespace developion\craftcookies\controllers;
 
 use Craft;
+use craft\base\Field as BaseField;
 use craft\ckeditor\Field;
 use craft\web\Controller;
 use developion\craftcookies\records\GeneralSettings;
@@ -12,7 +13,7 @@ class SettingsController extends Controller
 	public function actionGeneral()
 	{
 		$generalSettings = GeneralSettings::find()
-			->where(['siteId' => Craft::$app->getSites()->getCurrentSite()->id])
+			->where(['siteId' => Craft::$app->getSites()->getSiteByHandle($this->request->getQueryParam('site'))?->id])
 			->one();
 		$bannerMessage = $this->richTextField($generalSettings);
 		return $this->renderTemplate('_craft-cookies/cp/generalSettings.twig', compact('generalSettings', 'bannerMessage'));
@@ -25,7 +26,7 @@ class SettingsController extends Controller
 		unset($params['action']);
 
 		$record = GeneralSettings::find()
-			->where(['siteId' => $this->request->getBodyParam('siteId')])
+			->where(['siteId' => (int) $this->request->getBodyParam('siteId')])
 			->one();
 
 		foreach ($params as $key => $value) {
@@ -37,12 +38,13 @@ class SettingsController extends Controller
 
 	private function richTextField(GeneralSettings $generalSettings): ?string
 	{
+		/** @var BaseField $field */
 		$field = Craft::$app->getFields()->createField([
 			'type' => Field::class,
 			'name' => Craft::t('_craft-cookies', 'Banner Message'),
 			'handle' => 'bannerMessage'
 		]);
 
-		return $field->getInputHtml($generalSettings->bannerMessage ?? '');
+		return $field->getInputHtml($generalSettings->bannerMessage ?? '', null);
 	}
 }

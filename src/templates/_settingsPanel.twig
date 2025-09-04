@@ -8,32 +8,9 @@
 			<span class="sr-only">{{ 'Close Settings'|t }}</span>
 		</button>
 		<div class="cookie-settings-header">
-			<h3>Cookie Settings</h3>
+			<h3>{{ generalSettings.settingsTitle }}</h3>
 		</div>
 		<div class="cookie-category-wrapper">
-			<div class="cookie-category">
-				<div class="cookie-category-header">
-					<div class="cookie-category-title">Essential Cookies</div>
-					<label class="cookie-category-toggle disabled">
-						<span class="sr-only">{{ 'Essential'|t }}</span>
-						<input type="checkbox" disabled="" data-category="essential">
-						<span class="cookie-category-slider">
-							<span class="cookie-icon check-icon">{{ include('_craft-cookies/_svg/checkmark') }}</span>
-						</span>
-					</label>
-					<button class="category-dropdown-opener">
-						<span>{{ include('_craft-cookies/_svg/caret-down') }}</span>
-						<span class="sr-only">{{ 'Open category dropdown' }}</span>
-					</button>
-				</div>
-				<div class="cookie-category-description">Essential cookies are necessary for the website to function properly. They cannot be disabled.</div>
-				<div class="category-services-list">
-					<p>Amazon Web Service</p>
-					<p>Youtube</p>
-					<p>Facebook pixel</p>
-					<p>Google</p>
-				</div>
-			</div>
 			{% for key, item in cookies %}
 				{% if key === '' %}
 					{% set key = 'Uncategorized' %}
@@ -67,10 +44,10 @@
 			{% endfor %}
 		</div>
 		<div class="cookie-settings-footer">
-			<button class="cookie-consent-button primary" data-action="save-preferences">Save Preferences</button>
+			<button class="cookie-consent-button primary" data-action="save-preferences">{{ generalSettings.saveText }}</button>
 		</div>
 	</div>
 	<div class="cookie-consent-footer">
-		<p>Powered by <a href="#">ContentReactor</a></p>
+		<p>Powered by <a href="https://contentreactor.com/">ContentReactor</a></p>
 	</div>
 </div>

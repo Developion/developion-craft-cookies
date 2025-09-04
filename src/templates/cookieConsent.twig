@@ -1,40 +1,33 @@
 {% set cookieBar = cookieConsent.getSettings() %}
 
-{% if cookieBar.enableCookieConsent %}
-	{% do view.registerAssetBundle('developion\\craftcookies\\Web\\Assets\\Front\\FrontAsset') %}
-	<div class="cookie-opener-icon">
-		<button>
-			<span class="button-icon">{{ include('_craft-cookies/_svg/cookie-opener') }}</span>
-			<span class="sr-only">{{ 'Toggle Cookie Banner'|t }}</span>
-		</button>
-	</div>
-	<div class="cookie-consent-bar bottom-right">
-		<div class="cookie-image">{{ include('_craft-cookies/_svg/cookie') }}</div>
-		<div class="cookie-consent-content">
-			<div class="cookie-consent-text">
-				<h3>{{ cookieBar.cookieBarTitle }}</h3>
-				{# <p>{{ cookieBar.cookieBarMessage }}</p> #}
-				<p>Wir verwenden notwendige Cookies, um dir eine perfekte Website-Erfahrung zu bieten.
-				Zusätzlich würden wir gerne weitere Cookies einsetzen, um die Leistung unserer
-				Website zu analysieren und Informationen für dich zu
-				personalisieren – aber nur, wenn du zustimmst.
-				Mehr über deine Auswahlmöglichkeiten erfährst du in unserer <a href="#">Cookie-Richtlinie</a>.</p>
-				<div class="cookie-consent-buttons">
-					<button class="cookie-consent-button primary" data-action="deny-all">
-						<span>{{ 'Deny'|t }}</span>
-					</button>
-					<button class="cookie-consent-button secondary" data-action="open-settings">
-						<span>{{ cookieBar.cookieSettingsButtonText }}</span>
-					</button>
-					<button class="cookie-consent-button primary" data-action="accept-all">
-						<span>{{ cookieBar.acceptAllButtonText }}</span>
-					</button>
-				</div>
-			</div>
-			<div class="cookie-consent-footer">
-				<p>Powered by <a href="#">ContentReactor</a></p>
+{% do view.registerAssetBundle('developion\\craftcookies\\Web\\Assets\\Front\\FrontAsset') %}
+<div class="cookie-opener-icon">
+	<button>
+		<span class="button-icon">{{ include('_craft-cookies/_svg/cookie-opener') }}</span>
+		<span class="sr-only">{{ 'Toggle Cookie Banner'|t }}</span>
+	</button>
+</div>
+<div class="cookie-consent-bar bottom-right">
+	<div class="cookie-image">{{ include('_craft-cookies/_svg/cookie') }}</div>
+	<div class="cookie-consent-content">
+		<div class="cookie-consent-text">
+			<h3>{{ generalSettings.bannerTitle|raw }}</h3>
+			{{ generalSettings.bannerMessage|raw }}
+			<div class="cookie-consent-buttons">
+				<button class="cookie-consent-button primary" data-action="deny-all">
+					<span>{{ generalSettings.denyText|raw|t }}</span>
+				</button>
+				<button class="cookie-consent-button secondary" data-action="open-settings">
+					<span>{{ generalSettings.settingsText|raw }}</span>
+				</button>
+				<button class="cookie-consent-button primary" data-action="accept-all">
+					<span>{{ generalSettings.acceptText|raw }}</span>
+				</button>
 			</div>
 		</div>
-		{{ include('_craft-cookies/_settingsPanel') }}
+		<div class="cookie-consent-footer">
+			<p>Powered by <a href="https://contentreactor.com/">ContentReactor</a></p>
+		</div>
 	</div>
-{% endif %}
+	{{ include('_craft-cookies/_settingsPanel') }}
+</div>

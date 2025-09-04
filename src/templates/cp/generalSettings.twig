@@ -2,15 +2,27 @@
 {% import '_includes/forms.twig' as forms %}
 {% set fullPageForm = true %}
 {% set title = 'Craft Cookies' %}
-{% set contextMenu %}
-	{% if craft.app.getIsMultiSite() %}
-		{% include '_elements/sitemenu' %}
+{% if craft.app.getIsMultiSite() %}
+	{% if craft.app.getVersion()|integer === 5 %}
+		{% set crumbs = [{
+			id: 'site-crumb',
+			icon: 'world',
+			label: requestedSite.name|t('site'),
+			menu: {
+				items: siteMenuItems(null, requestedSite),
+				label: 'Select site'|t('app')
+			},
+		}] %}
+	{% else %}
+		{% set contextMenu %}
+			{% include '_elements/sitemenu' %}
+		{% endset %}
 	{% endif %}
-{% endset %}
+{% endif %}
 
 {% block content %}
 	{{ actionInput('_craft-cookies/settings/save') }}
-	{{ hiddenInput('siteId', craft.app.getSites().getCurrentSite().id) }}
+	{{ hiddenInput('siteId', craft.app.getSites().getSiteByHandle(craft.app.request.getQueryParam('site')).id) }}
 
 	{{ forms.textField({
 		id: 'banner-title',
