@@ -1,0 +1,75 @@
+{% extends '_layouts/cp' %}
+{% import '_includes/forms.twig' as forms %}
+{% set fullPageForm = true %}
+{% set title = 'Craft Cookies' %}
+{% set contextMenu %}
+	{% if craft.app.getIsMultiSite() %}
+		{% include '_elements/sitemenu' %}
+	{% endif %}
+{% endset %}
+
+{% block content %}
+	{{ actionInput('_craft-cookies/settings/save') }}
+	{{ hiddenInput('siteId', craft.app.getSites().getCurrentSite().id) }}
+
+	{{ forms.textField({
+		id: 'banner-title',
+		label: 'Banner Title' | t('_craft-cookies'),
+		instructions: 'Title of the initial banner.' | t('_craft-cookies'),
+		name: 'bannerTitle',
+		required: true,
+		value: generalSettings.bannerTitle,
+	}) }}
+
+	{{ forms.field({
+		id: 'banner-title',
+		label: 'Banner Message' | t('_craft-cookies'),
+		instructions: 'Message of the initial banner.' | t('_craft-cookies'),
+		name: 'bannerMessage',
+		required: true,
+	}, bannerMessage|raw) }}
+
+	{{ forms.textField({
+		id: 'deny-text',
+		label: 'Deny Button Text' | t('_craft-cookies'),
+		instructions: 'Deny button text.' | t('_craft-cookies'),
+		name: 'denyText',
+		required: true,
+		value: generalSettings.denyText,
+	}) }}
+
+	{{ forms.textField({
+		id: 'accept-text',
+		label: 'Accept All button text' | t('_craft-cookies'),
+		instructions: 'Accept All button text.' | t('_craft-cookies'),
+		name: 'acceptText',
+		required: true,
+		value: generalSettings.acceptText,
+	}) }}
+
+	{{ forms.textField({
+		id: 'settings-text',
+		label: 'Cookie Settings button text' | t('_craft-cookies'),
+		instructions: 'Cookie Settings button text.' | t('_craft-cookies'),
+		name: 'settingsText',
+		required: true,
+		value: generalSettings.settingsText,
+	}) }}
+
+	{{ forms.textField({
+		id: 'save-text',
+		label: 'Save Preferences button text' | t('_craft-cookies'),
+		instructions: 'Save Preferences button text.' | t('_craft-cookies'),
+		name: 'saveText',
+		required: true,
+		value: generalSettings.saveText,
+	}) }}
+
+	{{ forms.textField({
+		id: 'settings-title',
+		label: 'Settings Title' | t('_craft-cookies'),
+		instructions: 'Title of the banner that appears when Cookie Settings is clicked.' | t('_craft-cookies'),
+		name: 'settingsTitle',
+		value: generalSettings.settingsTitle
+	}) }}
+{% endblock %}

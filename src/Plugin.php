@@ -71,7 +71,8 @@ class Plugin extends BasePlugin
 			UrlManager::class,
 			UrlManager::EVENT_REGISTER_CP_URL_RULES,
 			function (RegisterUrlRulesEvent $event) {
-				$event->rules['craft-cookies'] = ['template' => '_craft-cookies/'];
+				$event->rules['_craft-cookies'] = '_craft-cookies/settings/general';
+				$event->rules['craft-cookies/general-settings'] = '_craft-cookies/settings/general';
 			}
 		);
 
@@ -83,7 +84,7 @@ class Plugin extends BasePlugin
 			}
 		);
 
-		if ($this->getSettings()->enableCookieConsent && Craft::$app->getRequest()->getIsSiteRequest() && !Craft::$app->getRequest()->getIsConsoleRequest()) {
+		if ($this->getSettings()->cookieManagerUrl != '' && Craft::$app->getRequest()->getIsSiteRequest() && !Craft::$app->getRequest()->getIsConsoleRequest()) {
 			Event::on(
 				View::class,
 				View::EVENT_END_BODY,
@@ -106,14 +107,15 @@ class Plugin extends BasePlugin
 		$navItems = parent::getCpNavItem();
 
 		$navItems['subnav']['codeSnippets'] = [
-			'label' => Craft::t('_craft-cookies', 'Code Snippets'),
-			'url' => 'craft-cookies',
+			'label' => Craft::t('_craft-cookies', 'General Settings'),
+			'url' => 'craft-cookies/general-settings',
 		];
-
-		$navItems['subnav']['settings'] = [
-			'label' => Craft::t('_craft-cookies', 'Settings'),
-			'url' => 'settings/plugins/_craft-cookies',
-		];
+		if (Craft::$app->getUser()->getIsAdmin() && Craft::$app->getConfig()->getGeneral()->allowAdminChanges) {
+			$navItems['subnav']['settings'] = [
+				'label' => Craft::t('_craft-cookies', 'Settings'),
+				'url' => 'settings/plugins/_craft-cookies',
+			];
+		}
 
 		return $navItems;
 	}
