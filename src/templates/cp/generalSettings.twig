@@ -3,13 +3,14 @@
 {% set fullPageForm = true %}
 {% set title = 'Craft Cookies' %}
 {% if craft.app.getIsMultiSite() %}
+
 	{% if craft.app.getVersion()|integer === 5 %}
 		{% set crumbs = [{
 			id: 'site-crumb',
 			icon: 'world',
 			label: requestedSite.name|t('site'),
 			menu: {
-				items: siteMenuItems(null, requestedSite),
+				items: callIfExists('siteMenuItems', null, requestedSite)|default({}),
 				label: 'Select site'|t('app')
 			},
 		}] %}
@@ -22,7 +23,7 @@
 
 {% block content %}
 	{{ actionInput('_craft-cookies/settings/save') }}
-	{{ hiddenInput('siteId', craft.app.getSites().getSiteByHandle(craft.app.request.getQueryParam('site')).id) }}
+	{{ hiddenInput('siteId', craft.app.getSites().getSiteByHandle(siteHandle).id) }}
 
 	{{ forms.textField({
 		id: 'banner-title',
