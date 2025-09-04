@@ -3,6 +3,7 @@
 namespace developion\craftcookies\Web\Twig;
 
 use developion\craftcookies\Plugin;
+use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
 use Twig\TwigFilter;
@@ -34,6 +35,12 @@ class Extension extends AbstractExtension implements GlobalsInterface
 	{
 		return [
 			new TwigFunction('hasConsentFor', Plugin::getInstance()->getCookieConsent()->hasConsentFor(...)),
+			new TwigFunction('callIfExists', function (Environment $twig, string $name, ...$args) {
+				$function = $twig->getFunction($name);
+				if (!$function) return null;
+				$callable = $function->getCallable();
+				return $callable(...$args);
+			}, ['needs_environment' => true]),
 		];
 	}
 }

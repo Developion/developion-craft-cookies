@@ -12,11 +12,12 @@ class SettingsController extends Controller
 {
 	public function actionGeneral()
 	{
+		$siteHandle = $this->request->getQueryParam('site') ?? Craft::$app->getSites()->getCurrentSite()->handle;
 		$generalSettings = GeneralSettings::find()
-			->where(['siteId' => Craft::$app->getSites()->getSiteByHandle($this->request->getQueryParam('site'))?->id])
+			->where(['siteId' => Craft::$app->getSites()->getSiteByHandle($siteHandle)?->id])
 			->one();
 		$bannerMessage = $this->richTextField($generalSettings);
-		return $this->renderTemplate('_craft-cookies/cp/generalSettings.twig', compact('generalSettings', 'bannerMessage'));
+		return $this->renderTemplate('_craft-cookies/cp/generalSettings.twig', compact('generalSettings', 'bannerMessage', 'siteHandle'));
 	}
 
 	public function actionSave()
