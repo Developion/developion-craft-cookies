@@ -15,6 +15,7 @@ use craft\web\View;
 use developion\craftcookies\Web\Twig\Extension;
 use developion\craftcookies\fields\CookieCategory;
 use developion\craftcookies\models\Settings;
+use developion\craftcookies\records\GeneralSettings;
 use developion\craftcookies\services\CookieConsentService;
 use developion\craftcookies\traits\Services;
 use yii\base\Event;
@@ -89,7 +90,10 @@ class Plugin extends BasePlugin
 				View::class,
 				View::EVENT_END_BODY,
 				static function ($event): void {
-					echo Craft::$app->view->renderTemplate('_craft-cookies/cookieConsent');
+					$generalSettings = GeneralSettings::find()
+						->where(['siteId' => Craft::$app->getSites()->getCurrentSite()->id])
+						->one();
+					echo Craft::$app->view->renderTemplate('_craft-cookies/cookieConsent', compact('generalSettings'));
 				}
 			);
 		}
