@@ -20,7 +20,10 @@ class FrontAsset extends AssetBundle
 		];
 
 		$this->js = [
-			'js/cookie-consent.js',
+			[
+				'js/cookie-consent.js',
+				'type' => 'module'
+			]
 		];
 
 		$this->css = [

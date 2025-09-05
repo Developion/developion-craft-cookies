@@ -21,7 +21,7 @@
 						<label class="cookie-category-toggle">
 							<span class="sr-only">{{ key }} Cookies</span>
 							{% set cookieHandle = item.handle ?? 'uncategorized' %}
-							<input type="checkbox" data-cookie-category="{{ cookieHandle }}"  {% if checkCookie(cookieHandle) %}checked{% endif %}>
+							<input name="{{ cookieHandle }}" type="checkbox" data-cookie-category="{{ cookieHandle }}"  {% if checkCookie(cookieHandle) %}checked{% endif %}>
 							<span class="cookie-category-slider">
 								<span class="cookie-icon check-icon">{{ include('_craft-cookies/_svg/checkmark') }}</span>
 								<span class="cookie-icon close-icon">{{ include('_craft-cookies/_svg/close') }}</span>
