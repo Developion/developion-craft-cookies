@@ -24,61 +24,61 @@
  * }));
  */
 function handleConsentUpdate(e) {
-  if (typeof window.gtag !== 'function') return;
+	if (typeof window.gtag !== 'function') return
 
-  const { preferences, status } = e.detail;
-  const { analytics, marketing } = preferences || {};
-  let options = {};
+	const { preferences, status } = e.detail
+	const { analytics, marketing } = preferences || {}
+	let options = {}
 
-  switch (status) {
-    case 'DENY_ALL':
-      options = Object.fromEntries(
-        [
-          'analytics_storage',
-          'ad_storage',
-          'ad_user_data',
-          'ad_personalization',
-          'personalization_storage',
-          'functionality_storage',
-          'security_storage',
-        ].map(key => [key, 'denied'])
-      );
-      break;
+	switch (status) {
+		case 'DENY_ALL':
+			options = Object.fromEntries(
+				[
+					'analytics_storage',
+					'ad_storage',
+					'ad_user_data',
+					'ad_personalization',
+					'personalization_storage',
+					'functionality_storage',
+					'security_storage',
+				].map((key) => [key, 'denied'])
+			)
+			break
 
-    case 'ACCEPT_ALL':
-      options = Object.fromEntries(
-        [
-          'analytics_storage',
-          'ad_storage',
-          'ad_user_data',
-          'ad_personalization',
-          'personalization_storage',
-          'functionality_storage',
-          'security_storage',
-        ].map(key => [key, 'granted'])
-      );
-      break;
+		case 'ACCEPT_ALL':
+			options = Object.fromEntries(
+				[
+					'analytics_storage',
+					'ad_storage',
+					'ad_user_data',
+					'ad_personalization',
+					'personalization_storage',
+					'functionality_storage',
+					'security_storage',
+				].map((key) => [key, 'granted'])
+			)
+			break
 
-    case 'UPDATE':
-      options = {
-        analytics_storage: analytics ? 'granted' : 'denied',
-        ad_storage: marketing ? 'granted' : 'denied',
-        ad_user_data: marketing ? 'granted' : 'denied',
-        ad_personalization: marketing ? 'granted' : 'denied',
-        personalization_storage: marketing ? 'granted' : 'denied',
-        // functionality & security_storage omitted (assumed granted)
-      };
-      break;
+		case 'UPDATE':
+			options = {
+				analytics_storage: analytics ? 'granted' : 'denied',
+				ad_storage: marketing ? 'granted' : 'denied',
+				ad_user_data: marketing ? 'granted' : 'denied',
+				ad_personalization: marketing ? 'granted' : 'denied',
+				personalization_storage: marketing ? 'granted' : 'denied',
+				// functionality & security_storage omitted (assumed granted)
+			}
+			break
 
-    default:
-      console.warn('Unknown consent status:', status);
-      return;
-  }
+		default:
+			console.warn('Unknown consent status:', status)
+			return
+	}
 
-  gtag('consent', 'update', options);
-  gtag('config', 'G-XXXXXXXXXX');
+	gtag('consent', 'update', options)
+	gtag('config', 'G-XXXXXXXXXX')
 }
-document.addEventListener('cookieConsentUpdated', handleConsentUpdate);
+document.addEventListener('cookieConsentUpdated', handleConsentUpdate)
 
 /**
  * Sets the default Google Consent Mode configuration before user action.
@@ -87,17 +87,17 @@ document.addEventListener('cookieConsentUpdated', handleConsentUpdate);
  * Grants essential functionality and security storage by default.
  */
 function setDefaultGtagConfig() {
-  if (typeof window.gtag !== 'function') return;
+	if (typeof window.gtag !== 'function') return
 
-  gtag('consent', 'default', {
-    analytics_storage: 'denied',
-    ad_storage: 'denied',
-    ad_user_data: 'denied',
-    ad_personalization: 'denied',
-    personalization_storage: 'denied',
-    functionality_storage: 'granted',
-    security_storage: 'granted',
-    wait_for_update: 500,
-  });
+	gtag('consent', 'default', {
+		analytics_storage: 'denied',
+		ad_storage: 'denied',
+		ad_user_data: 'denied',
+		ad_personalization: 'denied',
+		personalization_storage: 'denied',
+		functionality_storage: 'granted',
+		security_storage: 'granted',
+		wait_for_update: 500,
+	})
 }
-document.addEventListener('cookieConsentOnLoad', setDefaultGtagConfig);
+document.addEventListener('cookieConsentOnLoad', setDefaultGtagConfig)
