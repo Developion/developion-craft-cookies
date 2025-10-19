@@ -68,7 +68,10 @@ class CookieConsentService extends Component
 			function () {
 				$url = Plugin::getInstance()->getSettings()->cookieManagerUrl;
 
-				$client = new Client(['base_uri' => $url]);
+				$client = new Client([
+					'base_uri' => $url,
+					'http_errors' => false,
+				]);
 				return $client->get("/api/categories", [
 					RequestOptions::HEADERS => [
 						'Origin' => UrlHelper::baseSiteUrl(),
@@ -87,7 +90,10 @@ class CookieConsentService extends Component
 			function () {
 				$url = Plugin::getInstance()->getSettings()->cookieManagerUrl;
 
-				$client = new Client(['base_uri' => $url]);
+				$client = new Client([
+					'base_uri' => $url,
+					'http_errors' => false,
+				]);
 				return $client->get("/api/cookies", [
 					RequestOptions::HEADERS => [
 						'Origin' => UrlHelper::baseSiteUrl(),

@@ -46,7 +46,10 @@ class ConsentController extends Controller
 			$cookies[] = $cookie->name;
 		}
 		$cookies = array_merge($cookies, $frontEndCookies);
-		$request = new Client(['base_uri' => $url]);
+		$request = new Client([
+			'base_uri' => $url,
+			'http_errors' => false,
+		]);
 		$response = $request->post('/api/cookies', [
 			RequestOptions::FORM_PARAMS => [
 				'domain' => [
