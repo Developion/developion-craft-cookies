@@ -4,8 +4,10 @@ namespace developion\craftcookies\controllers;
 
 use developion\craftcookies\Plugin;
 use Craft;
+use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
 use craft\web\Controller;
+use DateTime;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use yii\web\Response;
@@ -68,5 +70,36 @@ class ConsentController extends Controller
 		$cookies = Plugin::getInstance()->getCookieConsent()->getCookies();
 
 		return $this->asJson($cookies);
+	}
+
+	public function actionSaveConsentData(): void
+	{
+		$this->requirePostRequest();
+		$consent = Craft::$app->getRequest()->getBodyParam('consent');
+		$userIp = Craft::$app->getRequest()->userIP;
+
+		$longIp = ip2long($userIp);
+		$anonLong = $longIp & 0xFFFFFF00;
+		$anonIp = long2ip($anonLong);
+
+		$request = new Client([
+			'base_uri' => Plugin::getInstance()->getSettings()->cookieManagerUrl,
+			'http_errors' => false,
+		]);
+
+		$reponse = $request->post('/api/consent', [
+			'headers' => [
+				'Accept' => 'application/json',
+			],
+			'json' => [
+				'consentGiven' => json_decode($consent, true),
+				'consentId' => StringHelper::UUID(),
+				'timestamp' => date('Y-m-d H:i:s', time()),
+				'pluginVersion' => Plugin::getInstance()->getVersion(),
+				'site' => UrlHelper::baseSiteUrl(),
+				'userId' => sprintf('user-%04x%04x', random_int(0, 0xffff), random_int(0, 0xffff)),
+				'source' => $anonIp,
+			]
+		]);
 	}
 }

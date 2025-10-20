@@ -157,6 +157,17 @@ function saveConsent(preferences, status) {
 		})
 		.catch((error) => console.error('Error saving cookie preferences:', error))
 
+	const consentFormData = new FormData()
+	consentFormData.append('consent', JSON.stringify(preferences))
+	consentFormData.append('action', '_craft-cookies/consent/save-consent-data')
+	consentFormData.append(window.craftCookies.csrfParam, window.craftCookies.csrfToken)
+
+	fetch(location.origin, {
+		method: 'POST',
+		body: consentFormData,
+	})
+	.then((response) => response.json())
+
 	document.dispatchEvent(
 		new CustomEvent('cookieConsentUpdated', {
 			detail: { preferences, status },
