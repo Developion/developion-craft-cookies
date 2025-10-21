@@ -53,6 +53,9 @@ class ConsentController extends Controller
 			'http_errors' => false,
 		]);
 		$response = $request->post('/api/cookies', [
+			'headers' => [
+				'Authorization' => 'Bearer ' . Plugin::getInstance()->getSettings()->apiKey,
+			],
 			RequestOptions::FORM_PARAMS => [
 				'domain' => [
 					'name' => Craft::$app->getSystemName(),
@@ -90,6 +93,8 @@ class ConsentController extends Controller
 		$reponse = $request->post('/api/consent', [
 			'headers' => [
 				'Accept' => 'application/json',
+				'Authorization' => 'Bearer ' . Plugin::getInstance()->getSettings()->apiKey,
+
 			],
 			'json' => [
 				'consentGiven' => json_decode($consent, true),

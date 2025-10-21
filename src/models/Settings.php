@@ -25,11 +25,12 @@ class Settings extends Model
 	public string $cookieNamePrefix = 'cookieConsent_';
 
 	public string $cookieManagerUrl = 'https://cookie-manager.ddev.site/';
+	public string $apiKey = '';
 
 	public function rules(): array
 	{
 		return [
-			[['cookieManagerUrl'], 'required'],
+			[['cookieManagerUrl', 'apiKey'], 'required'],
 		];
 	}
 }

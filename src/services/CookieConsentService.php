@@ -75,6 +75,7 @@ class CookieConsentService extends Component
 				return $client->get("/api/categories", [
 					RequestOptions::HEADERS => [
 						'Origin' => UrlHelper::baseSiteUrl(),
+						'Authorization' => 'Bearer ' . Plugin::getInstance()->getSettings()->apiKey,
 					]
 				])
 				->getBody()->getContents();
@@ -97,6 +98,7 @@ class CookieConsentService extends Component
 				return $client->get("/api/cookies", [
 					RequestOptions::HEADERS => [
 						'Origin' => UrlHelper::baseSiteUrl(),
+						'Authorization' => 'Bearer ' . Plugin::getInstance()->getSettings()->apiKey,
 					]
 				])
 				->getBody()->getContents();
