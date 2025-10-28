@@ -4,6 +4,7 @@ namespace developion\craftcookies\controllers;
 
 use developion\craftcookies\Plugin;
 use Craft;
+use craft\helpers\App;
 use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
 use craft\web\Controller;
@@ -54,7 +55,7 @@ class ConsentController extends Controller
 		]);
 		$response = $request->post('/api/cookies', [
 			'headers' => [
-				'Authorization' => 'Bearer ' . Plugin::getInstance()->getSettings()->apiKey,
+				'Authorization' => 'Bearer ' . App::parseEnv(Plugin::getInstance()->getSettings()->apiKey),
 			],
 			RequestOptions::FORM_PARAMS => [
 				'domain' => [
@@ -93,7 +94,7 @@ class ConsentController extends Controller
 		$reponse = $request->post('/api/consent', [
 			'headers' => [
 				'Accept' => 'application/json',
-				'Authorization' => 'Bearer ' . Plugin::getInstance()->getSettings()->apiKey,
+				'Authorization' => 'Bearer ' . App::parseEnv(Plugin::getInstance()->getSettings()->apiKey),
 
 			],
 			'json' => [

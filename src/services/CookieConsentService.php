@@ -5,6 +5,7 @@ namespace developion\craftcookies\services;
 use developion\craftcookies\models\Settings;
 use developion\craftcookies\Plugin;
 use Craft;
+use craft\helpers\App;
 use craft\helpers\UrlHelper;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
@@ -75,7 +76,7 @@ class CookieConsentService extends Component
 				return $client->get("/api/categories", [
 					RequestOptions::HEADERS => [
 						'Origin' => UrlHelper::baseSiteUrl(),
-						'Authorization' => 'Bearer ' . Plugin::getInstance()->getSettings()->apiKey,
+						'Authorization' => 'Bearer ' . App::parseEnv(Plugin::getInstance()->getSettings()->apiKey),
 					]
 				])
 				->getBody()->getContents();
@@ -90,7 +91,6 @@ class CookieConsentService extends Component
 			'craft_cookies',
 			function () {
 				$url = Plugin::getInstance()->getSettings()->cookieManagerUrl;
-
 				$client = new Client([
 					'base_uri' => $url,
 					'http_errors' => false,
@@ -98,7 +98,7 @@ class CookieConsentService extends Component
 				return $client->get("/api/cookies", [
 					RequestOptions::HEADERS => [
 						'Origin' => UrlHelper::baseSiteUrl(),
-						'Authorization' => 'Bearer ' . Plugin::getInstance()->getSettings()->apiKey,
+						'Authorization' => 'Bearer ' . App::parseEnv(Plugin::getInstance()->getSettings()->apiKey),
 					]
 				])
 				->getBody()->getContents();
