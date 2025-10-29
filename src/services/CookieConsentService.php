@@ -67,7 +67,7 @@ class CookieConsentService extends Component
 		return Craft::$app->getCache()->getOrSet(
 			'craft_categories',
 			function () {
-				$url = Plugin::getInstance()->getSettings()->cookieManagerUrl;
+				$url = App::parseEnv(Plugin::getInstance()->getSettings()->cookieManagerUrl);
 
 				$client = new Client([
 					'base_uri' => $url,
@@ -90,7 +90,7 @@ class CookieConsentService extends Component
 		return Craft::$app->getCache()->getOrSet(
 			'craft_cookies',
 			function () {
-				$url = Plugin::getInstance()->getSettings()->cookieManagerUrl;
+				$url = App::parseEnv(Plugin::getInstance()->getSettings()->cookieManagerUrl);
 				$client = new Client([
 					'base_uri' => $url,
 					'http_errors' => false,

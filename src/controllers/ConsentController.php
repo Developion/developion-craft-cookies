@@ -42,7 +42,7 @@ class ConsentController extends Controller
 		if (!rand(0, 9) === 5) {
 			return;
 		}
-		$url = Plugin::getInstance()->getSettings()->cookieManagerUrl;
+		$url = App::parseEnv(Plugin::getInstance()->getSettings()->cookieManagerUrl);
 		$frontEndCookies = array_keys(json_decode($this->request->getBodyParam('cookies'), true));
 		$cookies = [];
 		foreach (Craft::$app->getRequest()->getCookies() as $cookie) {
@@ -87,7 +87,7 @@ class ConsentController extends Controller
 		$anonIp = long2ip($anonLong);
 
 		$request = new Client([
-			'base_uri' => Plugin::getInstance()->getSettings()->cookieManagerUrl,
+			'base_uri' => App::parseEnv(Plugin::getInstance()->getSettings()->cookieManagerUrl),
 			'http_errors' => false,
 		]);
 
