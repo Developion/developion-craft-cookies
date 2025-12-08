@@ -44,8 +44,7 @@ class CookieConsentService extends Component
 
 		return Craft::$app->getRequest()
 			->getCookies()
-			->getValue($prefix . $category) ?? false
-		;
+			->getValue($prefix . $category) ?? false;
 	}
 
 	public function setCookie(string $name, bool $value, int $expiration)
@@ -62,48 +61,54 @@ class CookieConsentService extends Component
 		]));
 	}
 
+	public function setCookieCategories(): string
+	{
+		$url = App::parseEnv(Plugin::getInstance()->getSettings()->cookieManagerUrl);
+
+		$client = new Client([
+			'base_uri' => $url,
+			'http_errors' => false,
+		]);
+		$value =  $client->get("/api/categories", [
+			RequestOptions::HEADERS => [
+				'Origin' => UrlHelper::baseSiteUrl(),
+				'Authorization' => 'Bearer ' . App::parseEnv(Plugin::getInstance()->getSettings()->apiKey),
+			]
+		])
+			->getBody()->getContents();
+		return Craft::$app->getCache()->set(
+			'craft_categories',
+			$value
+		);
+	}
+
 	public function getCookieCategories(): string
 	{
-		return Craft::$app->getCache()->getOrSet(
-			'craft_categories',
-			function () {
-				$url = App::parseEnv(Plugin::getInstance()->getSettings()->cookieManagerUrl);
+		return Craft::$app->getCache()->get('craft_categories');
+	}
 
-				$client = new Client([
-					'base_uri' => $url,
-					'http_errors' => false,
-				]);
-				return $client->get("/api/categories", [
-					RequestOptions::HEADERS => [
-						'Origin' => UrlHelper::baseSiteUrl(),
-						'Authorization' => 'Bearer ' . App::parseEnv(Plugin::getInstance()->getSettings()->apiKey),
-					]
-				])
-				->getBody()->getContents();
-			}, 60 * 60
+	public function setCookies()
+	{
+		$url = App::parseEnv(Plugin::getInstance()->getSettings()->cookieManagerUrl);
+		$client = new Client([
+			'base_uri' => $url,
+			'http_errors' => false,
+		]);
+		$value = $client->get("/api/cookies", [
+			RequestOptions::HEADERS => [
+				'Origin' => UrlHelper::baseSiteUrl(),
+				'Authorization' => 'Bearer ' . App::parseEnv(Plugin::getInstance()->getSettings()->apiKey),
+			]
+		])
+			->getBody()->getContents();
+		return Craft::$app->getCache()->set(
+			'craft_cookies',
+			$value
 		);
-
 	}
 
 	public function getCookies(): string
 	{
-		return Craft::$app->getCache()->getOrSet(
-			'craft_cookies',
-			function () {
-				$url = App::parseEnv(Plugin::getInstance()->getSettings()->cookieManagerUrl);
-				$client = new Client([
-					'base_uri' => $url,
-					'http_errors' => false,
-				]);
-				return $client->get("/api/cookies", [
-					RequestOptions::HEADERS => [
-						'Origin' => UrlHelper::baseSiteUrl(),
-						'Authorization' => 'Bearer ' . App::parseEnv(Plugin::getInstance()->getSettings()->apiKey),
-					]
-				])
-				->getBody()->getContents();
-			}, 60 * 60
-		);
-
+		return Craft::$app->getCache()->get('craft_cookies');
 	}
 }

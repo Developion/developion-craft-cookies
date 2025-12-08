@@ -9,6 +9,7 @@ use craft\events\DefineInputOptionsEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterTemplateRootsEvent;
 use craft\events\RegisterUrlRulesEvent;
+use craft\helpers\App;
 use craft\services\Fields;
 use craft\web\UrlManager;
 use craft\web\View;
@@ -85,7 +86,11 @@ class Plugin extends BasePlugin
 			}
 		);
 
-		if ($this->getSettings()->cookieManagerUrl != '' && Craft::$app->getRequest()->getIsSiteRequest() && !Craft::$app->getRequest()->getIsConsoleRequest()) {
+		if (App::parseEnv('$COOKIE_FRONTEND_ENABLED') &&
+			Craft::$app->getCache()->get('craft_cookies') &&
+			Craft::$app->getRequest()->getIsSiteRequest() &&
+			!Craft::$app->getRequest()->getIsConsoleRequest()
+		) {
 			Event::on(
 				View::class,
 				View::EVENT_END_BODY,

@@ -16,7 +16,9 @@
 		}] %}
 	{% else %}
 		{% set contextMenu %}
-			{% include '_elements/sitemenu' %}
+			{% include '_elements/sitemenu' with {
+				urlFormat: (craft.app.request.getPathInfo() ~ (craft.app.request.getQueryString() ? ('?' ~ craft.app.request.getQueryString() ~ '&site={handle}') : '?site={handle}'))
+			} %}
 		{% endset %}
 	{% endif %}
 {% endif %}
@@ -31,7 +33,7 @@
 		instructions: 'Title of the initial banner.' | t('_craft-cookies'),
 		name: 'bannerTitle',
 		required: true,
-		value: generalSettings.bannerTitle,
+		value: generalSettings.bannerTitle ?? '',
 	}) }}
 
 	{{ forms.field({
@@ -48,7 +50,7 @@
 		instructions: 'Deny button text.' | t('_craft-cookies'),
 		name: 'denyText',
 		required: true,
-		value: generalSettings.denyText,
+		value: generalSettings.denyText ?? '',
 	}) }}
 
 	{{ forms.textField({
@@ -57,7 +59,7 @@
 		instructions: 'Accept All button text.' | t('_craft-cookies'),
 		name: 'acceptText',
 		required: true,
-		value: generalSettings.acceptText,
+		value: generalSettings.acceptText ?? '',
 	}) }}
 
 	{{ forms.textField({
@@ -66,7 +68,7 @@
 		instructions: 'Cookie Settings button text.' | t('_craft-cookies'),
 		name: 'settingsText',
 		required: true,
-		value: generalSettings.settingsText,
+		value: generalSettings.settingsText ?? '',
 	}) }}
 
 	{{ forms.textField({
@@ -75,7 +77,7 @@
 		instructions: 'Save Preferences button text.' | t('_craft-cookies'),
 		name: 'saveText',
 		required: true,
-		value: generalSettings.saveText,
+		value: generalSettings.saveText ?? '',
 	}) }}
 
 	{{ forms.textField({
@@ -83,6 +85,6 @@
 		label: 'Settings Title' | t('_craft-cookies'),
 		instructions: 'Title of the banner that appears when Cookie Settings is clicked.' | t('_craft-cookies'),
 		name: 'settingsTitle',
-		value: generalSettings.settingsTitle
+		value: generalSettings.settingsTitle ?? '',
 	}) }}
 {% endblock %}

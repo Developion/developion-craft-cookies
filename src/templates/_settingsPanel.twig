@@ -12,14 +12,15 @@
 		</div>
 		<div class="cookie-category-wrapper">
 			{% for key, item in cookies %}
-				{% if key === '' %}
-					{% set key = 'Uncategorized' %}
+				{% set title = item.name %}
+				{% if item.name is null %}
+					{% set title = 'Uncategorized' %}
 				{% endif %}
 				<div class="cookie-category">
 					<div class="cookie-category-header">
-						<div class="cookie-category-title">{{ key }} Cookies</div>
+						<div class="cookie-category-title">{{ title }} Cookies</div>
 						<label class="cookie-category-toggle {% if item.mandatory %}disabled{% endif %}">
-							<span class="sr-only">{{ key }} Cookies</span>
+							<span class="sr-only">{{ title }} Cookies</span>
 							{% set cookieHandle = item.handle ?? 'uncategorized' %}
 							<input name="{{ cookieHandle }}" type="checkbox" data-cookie-category="{{ cookieHandle }}" {% if item.mandatory %}disabled{% endif %} {% if checkCookie(cookieHandle) || item.mandatory %}checked{% endif %}>
 							<span class="cookie-category-slider">
