@@ -49,22 +49,25 @@ class ConsentController extends Controller
 			$cookies[] = $cookie->name;
 		}
 		$cookies = array_merge($cookies, $frontEndCookies);
-		$request = new Client([
-			'base_uri' => $url,
-			'http_errors' => false,
-		]);
-		$response = $request->post('/api/cookies', [
-			'headers' => [
-				'Authorization' => 'Bearer ' . App::parseEnv(Plugin::getInstance()->getSettings()->apiKey),
-			],
-			RequestOptions::FORM_PARAMS => [
-				'domain' => [
-					'name' => Craft::$app->getSystemName(),
-					'url' => UrlHelper::baseSiteUrl()
+		try {
+			$request = new Client([
+				'base_uri' => $url,
+			]);
+			$response = $request->post('/api/cookies', [
+				'headers' => [
+					'Authorization' => 'Bearer ' . App::parseEnv(Plugin::getInstance()->getSettings()->apiKey),
 				],
-				'cookies' => $cookies
-			],
-		]);
+				RequestOptions::FORM_PARAMS => [
+					'domain' => [
+						'name' => Craft::$app->getSystemName(),
+						'url' => UrlHelper::baseSiteUrl()
+					],
+					'cookies' => $cookies
+				],
+			]);
+		} catch (\Throwable $th) {
+			return $this->asJson(['success' => false, 'message' => $th->getMessage()]);
+		}
 
 		return $this->asJson(['success' => true]);
 	}
@@ -85,27 +88,29 @@ class ConsentController extends Controller
 		$longIp = ip2long($userIp);
 		$anonLong = $longIp & 0xFFFFFF00;
 		$anonIp = long2ip($anonLong);
+		try {
+			$request = new Client([
+				'base_uri' => App::parseEnv(Plugin::getInstance()->getSettings()->cookieManagerUrl),
+			]);
 
-		$request = new Client([
-			'base_uri' => App::parseEnv(Plugin::getInstance()->getSettings()->cookieManagerUrl),
-			'http_errors' => false,
-		]);
+			$reponse = $request->post('/api/consent', [
+				'headers' => [
+					'Accept' => 'application/json',
+					'Authorization' => 'Bearer ' . App::parseEnv(Plugin::getInstance()->getSettings()->apiKey),
 
-		$reponse = $request->post('/api/consent', [
-			'headers' => [
-				'Accept' => 'application/json',
-				'Authorization' => 'Bearer ' . App::parseEnv(Plugin::getInstance()->getSettings()->apiKey),
-
-			],
-			'json' => [
-				'consentGiven' => json_decode($consent, true),
-				'consentId' => StringHelper::UUID(),
-				'timestamp' => date('Y-m-d H:i:s', time()),
-				'pluginVersion' => Plugin::getInstance()->getVersion(),
-				'site' => UrlHelper::baseSiteUrl(),
-				'userId' => sprintf('user-%04x%04x', random_int(0, 0xffff), random_int(0, 0xffff)),
-				'source' => $anonIp,
-			]
-		]);
+				],
+				'json' => [
+					'consentGiven' => json_decode($consent, true),
+					'consentId' => StringHelper::UUID(),
+					'timestamp' => date('Y-m-d H:i:s', time()),
+					'pluginVersion' => Plugin::getInstance()->getVersion(),
+					'site' => UrlHelper::baseSiteUrl(),
+					'userId' => sprintf('user-%04x%04x', random_int(0, 0xffff), random_int(0, 0xffff)),
+					'source' => $anonIp,
+				]
+			]);
+		} catch (\Throwable $th) {
+			Craft::error('Error sending consent data: ' . $th->getMessage(), __METHOD__);
+		}
 	}
 }

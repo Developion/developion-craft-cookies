@@ -26,7 +26,7 @@ class Extension extends AbstractExtension implements GlobalsInterface
 	public function getFilters()
 	{
 		return [
-			new TwigFilter('json_decode', function (string $json): ?array {
+			new TwigFilter('json_decode', function (string $json): mixed {
 				return json_decode($json, true);
 			}),
 		];
