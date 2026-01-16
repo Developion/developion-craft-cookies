@@ -19,6 +19,7 @@ use developion\craftcookies\models\Settings;
 use developion\craftcookies\records\GeneralSettings;
 use developion\craftcookies\services\CookieConsentService;
 use developion\craftcookies\traits\Services;
+use developion\craftcookies\Web\Assets\Front\FrontAsset;
 use yii\base\Event;
 
 /**
@@ -109,6 +110,23 @@ class Plugin extends BasePlugin
 			function (RegisterComponentTypesEvent $event) {
 				$event->types[] = CookieCategory::class;
 		});
+
+		if (!Craft::$app->getRequest()->getIsConsoleRequest()) {
+			Event::on(
+				View::class,
+				View::EVENT_BEFORE_RENDER_TEMPLATE,
+				function (Event $event) {
+					try {
+						Craft::$app->view->registerAssetBundle(FrontAsset::class);
+					} catch (\Exception $e) {
+						Craft::error(
+							'Error registering asset bundle: ' . $e->getMessage(),
+							__METHOD__
+						);
+					}
+				}
+			);
+		}
 	}
 
 	public function getCpNavItem(): ?array

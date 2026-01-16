@@ -4,7 +4,7 @@ namespace developion\craftcookies\Web\Assets\Front;
 
 use Craft;
 use craft\helpers\Json;
-use craft\Web\AssetBundle;
+use craft\web\AssetBundle;
 use craft\web\View;
 use developion\craftcookies\Plugin;
 use developion\craftcookies\Web\Assets\Font\FontAsset;
