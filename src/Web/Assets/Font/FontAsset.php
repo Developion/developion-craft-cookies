@@ -22,9 +22,11 @@ class FontAsset extends AssetBundle
 		$this->js = [];
 
 		$this->css = [
-			'css/fonts.css',
-			'as' => 'style',
-			'rel' => 'stylesheet preload',
+			[
+				'css/fonts.css',
+				'as' => 'style',
+				'rel' => 'stylesheet preload',
+			],
 		];
 
 		parent::init();
