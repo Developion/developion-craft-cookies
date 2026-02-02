@@ -6,6 +6,7 @@ use developion\craftcookies\services\CookieConsentService;
 
 /**
  * @mixin Plugin
+ * @property CookieConsentService $cookieConsentService
  */
 trait Services
 {

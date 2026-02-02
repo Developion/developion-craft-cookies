@@ -6,20 +6,24 @@ use Craft;
 use craft\base\Model;
 use craft\base\Plugin as BasePlugin;
 use craft\events\DefineInputOptionsEvent;
+use craft\events\RegisterCacheOptionsEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterTemplateRootsEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\helpers\App;
 use craft\services\Fields;
+use craft\services\Utilities;
+use craft\utilities\ClearCaches;
 use craft\web\UrlManager;
 use craft\web\View;
+use developion\craftcookies\Web\Assets\Front\FrontAsset;
 use developion\craftcookies\Web\Twig\Extension;
 use developion\craftcookies\fields\CookieCategory;
 use developion\craftcookies\models\Settings;
 use developion\craftcookies\records\GeneralSettings;
 use developion\craftcookies\services\CookieConsentService;
 use developion\craftcookies\traits\Services;
-use developion\craftcookies\Web\Assets\Front\FrontAsset;
+use developion\craftcookies\utilities\Cookies;
 use yii\base\Event;
 
 /**
@@ -32,6 +36,8 @@ use yii\base\Event;
 class Plugin extends BasePlugin
 {
 	use Services;
+
+	public static ?Plugin $plugin;
 
 	public string $schemaVersion = '1.0.0';
 	public bool $hasCpSettings = true;
@@ -49,9 +55,11 @@ class Plugin extends BasePlugin
 	public function init(): void
 	{
 		parent::init();
-		$this->attachEventHandlers();
+		self::$plugin = $this;
 
-		Craft::$app->onInit(function () {});
+		Craft::$app->onInit(function () {
+			$this->attachEventHandlers();
+		});
 		Craft::$app->view->registerTwigExtension(new Extension());
 	}
 
@@ -87,7 +95,25 @@ class Plugin extends BasePlugin
 			}
 		);
 
-		if (App::parseEnv('$COOKIE_FRONTEND_ENABLED') &&
+		Event::on(
+			ClearCaches::class,
+			ClearCaches::EVENT_REGISTER_CACHE_OPTIONS,
+			function (RegisterCacheOptionsEvent $event) {
+				$event->options[] = [
+					'key' => 'craft-cookies',
+					'label' => Craft::t('_craft-cookies', 'Craft Cookies caches'),
+					'action' => [self::$plugin->getCookieConsent(), 'invalidateCaches'],
+				];
+				$event->options[] = [
+					'key' => 'craft-category-caches',
+					'label' => Craft::t('_craft-cookies', 'Craft Cookie Category caches'),
+					'action' => [self::$plugin->getCookieConsent(), 'invalidateCaches'],
+				];
+			}
+		);
+
+		if (
+			App::parseEnv('$COOKIE_FRONTEND_ENABLED') &&
 			Craft::$app->getCache()->get('craft_cookies') &&
 			Craft::$app->getRequest()->getIsSiteRequest() &&
 			!Craft::$app->getRequest()->getIsConsoleRequest()
@@ -109,7 +135,8 @@ class Plugin extends BasePlugin
 			Fields::EVENT_REGISTER_FIELD_TYPES,
 			function (RegisterComponentTypesEvent $event) {
 				$event->types[] = CookieCategory::class;
-		});
+			}
+		);
 
 		if (!Craft::$app->getRequest()->getIsConsoleRequest()) {
 			Event::on(
@@ -127,6 +154,14 @@ class Plugin extends BasePlugin
 				}
 			);
 		}
+
+		Event::on(
+			Utilities::class,
+			Utilities::EVENT_REGISTER_UTILITIES,
+			function (RegisterComponentTypesEvent $event) {
+				$event->types[] = Cookies::class;
+			}
+		);
 	}
 
 	public function getCpNavItem(): ?array
@@ -145,5 +180,10 @@ class Plugin extends BasePlugin
 		}
 
 		return $navItems;
+	}
+
+	protected function cpNavIconPath(): ?string
+	{
+		return 'cookie-bite';
 	}
 }
