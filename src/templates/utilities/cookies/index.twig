@@ -1,0 +1,25 @@
+{% import "_includes/forms" as forms %}
+
+<h2>{{ 'Cookie Plugin Utilities'|t('_craft-cookies') }}</h2>
+{{ csrfInput() }}
+<p>{{ 'Use the utilities below to manage cookie data and check the API status.'|t('_craft-cookies') }}</p>
+<hr>
+<p>{{ 'Refresh the cookie data stored in the system.'|t('_craft-cookies') }}</p>
+<form class="utility" method="post" accept-charset="UTF-8">
+	{{ actionInput('_craft-cookies/utilities/refresh-data') }}
+	{{ csrfInput() }}
+	<div class="buttons">
+		<button type="submit" class="btn submit secondary">{{ 'Refresh Cookie Data'|t('_craft-cookies') }}</button>
+		<div class="utility-status"></div>
+	</div>
+</form>
+<hr>
+<p>{{ 'Check the status of the Cookie API to ensure it is functioning correctly.'|t('_craft-cookies') }}</p>
+<form class="utility" method="post" accept-charset="UTF-8">
+	{{ actionInput('_craft-cookies/utilities/healthcheck') }}
+	{{ csrfInput() }}
+	<div class="buttons">
+		<button type="submit" class="btn submit secondary">{{ 'Check API status'|t('_craft-cookies') }}</button>
+		<div class="utility-status"></div>
+	</div>
+</form>

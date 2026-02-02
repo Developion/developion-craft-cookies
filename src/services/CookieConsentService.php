@@ -10,6 +10,7 @@ use craft\helpers\UrlHelper;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use yii\base\Component;
+use yii\caching\TagDependency;
 use yii\web\Cookie;
 
 /**
@@ -78,7 +79,9 @@ class CookieConsentService extends Component
 			->getBody()->getContents();
 		return Craft::$app->getCache()->set(
 			'craft_categories',
-			$value
+			$value,
+			null,
+			new TagDependency(['tags' => ['craft_cookies']])
 		);
 	}
 
@@ -103,12 +106,27 @@ class CookieConsentService extends Component
 			->getBody()->getContents();
 		return Craft::$app->getCache()->set(
 			'craft_cookies',
-			$value
+			$value,
+			null,
+			new TagDependency(['tags' => ['craft_cookies']])
 		);
 	}
 
 	public function getCookies(): string
 	{
 		return Craft::$app->getCache()->get('craft_cookies');
+	}
+
+	public function invalidateCaches(): void
+	{
+		$cache = Craft::$app->getCache();
+		TagDependency::invalidate($cache, ['craft_cookies']);
+	}
+
+	public function refreshData(): void
+	{
+		$this->invalidateCaches();
+		$this->setCookies();
+		$this->setCookieCategories();
 	}
 }
