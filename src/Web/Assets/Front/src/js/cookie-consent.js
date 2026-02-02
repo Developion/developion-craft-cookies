@@ -2,6 +2,7 @@ import './gtag'
 
 const consentBar = document.querySelector('.cookie-consent-bar')
 const cookieOpener = document.querySelector('.cookie-opener-icon')
+const cookieBannerClose = document.querySelector('.cookie-banner-close')
 let categories = [...document.querySelectorAll('[data-cookie-category]')].map((item) =>
 	item.getAttribute('data-cookie-category')
 )
@@ -39,7 +40,10 @@ function animateCookie() {
 }
 
 function showCookieOpener() {
-	if (cookieOpener) cookieOpener.style.display = 'flex'
+	if (cookieOpener && cookieBannerClose) {
+		cookieOpener.style.display = 'flex'
+		cookieBannerClose.style.display = 'block'
+	}
 }
 
 function mapCategoryValues(categories, status = null) {
@@ -98,11 +102,16 @@ function initializeEventListeners() {
 		})
 	})
 
-	const toggleButton = document.querySelector('.cookie-opener-icon button')
-	if (toggleButton) {
-		toggleButton.addEventListener('click', () => {
-			consentBar.classList.toggle('show')
-			return false
+	const toggleButtons = [
+		document.querySelector('.cookie-opener-icon button'),
+		document.querySelector('.cookie-banner-close'),
+	]
+	if (toggleButtons) {
+		toggleButtons.forEach((toggleButton) => {
+			toggleButton.addEventListener('click', () => {
+				consentBar.classList.toggle('show')
+				return false
+			})
 		})
 	}
 }
@@ -165,8 +174,7 @@ function saveConsent(preferences, status) {
 	fetch(location.origin, {
 		method: 'POST',
 		body: consentFormData,
-	})
-	.then((response) => response.json())
+	}).then((response) => response.json())
 
 	document.dispatchEvent(
 		new CustomEvent('cookieConsentUpdated', {

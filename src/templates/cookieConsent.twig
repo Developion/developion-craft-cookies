@@ -7,11 +7,17 @@
 	</button>
 </div>
 <div class="cookie-consent-bar bottom-right">
+	<button class="cookie-banner-close" data-action="close-banner">
+		{{ include('_craft-cookies/_svg/close') }}
+		<span class="sr-only">{{ 'Close Banner'|t }}</span>
+	</button>
 	<div class="cookie-image">{{ include('_craft-cookies/_svg/cookie') }}</div>
 	<div class="cookie-consent-content">
 		<div class="cookie-consent-text">
 			<h3>{{ generalSettings.bannerTitle|raw }}</h3>
-			{{ generalSettings.bannerMessage|raw }}
+			<div class="cookie-consent-text-inner">
+				{{ generalSettings.bannerMessage|raw }}
+			</div>
 			<div class="cookie-consent-buttons">
 				<button class="cookie-consent-button primary" data-action="deny-all">
 					<span>{{ generalSettings.denyText|raw|t }}</span>
