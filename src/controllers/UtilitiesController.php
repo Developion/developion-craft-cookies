@@ -13,13 +13,11 @@ use yii\web\Response;
  */
 class UtilitiesController extends Controller
 {
-	public $defaultAction = 'index';
 	protected array|int|bool $allowAnonymous = self::ALLOW_ANONYMOUS_NEVER;
 
 	public function actionRefreshData(): Response
 	{
 		$this->requirePostRequest();
-		dd(json_decode(Plugin::getInstance()->getCookieConsent()->getCookies(), true));
 
 		Plugin::getInstance()->getCookieConsent()->refreshData();
 
