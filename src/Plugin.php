@@ -25,6 +25,7 @@ use developion\craftcookies\services\CookieConsentService;
 use developion\craftcookies\traits\Services;
 use developion\craftcookies\utilities\Cookies;
 use yii\base\Event;
+use yii\caching\FileCache;
 
 /**
  * Developion Cookies plugin
@@ -48,6 +49,10 @@ class Plugin extends BasePlugin
 		return [
 			'components' => [
 				'cookieConsent' => CookieConsentService::class,
+				'cookieCache' => [
+					'class' => FileCache::class,
+					'cachePath' => Craft::$app->getPath()->getStoragePath() . '/runtime/cookies',
+				]
 			],
 		];
 	}
@@ -95,26 +100,9 @@ class Plugin extends BasePlugin
 			}
 		);
 
-		Event::on(
-			ClearCaches::class,
-			ClearCaches::EVENT_REGISTER_CACHE_OPTIONS,
-			function (RegisterCacheOptionsEvent $event) {
-				$event->options[] = [
-					'key' => 'craft-cookies',
-					'label' => Craft::t('_craft-cookies', 'Craft Cookies caches'),
-					'action' => [self::$plugin->getCookieConsent(), 'invalidateCaches'],
-				];
-				$event->options[] = [
-					'key' => 'craft-category-caches',
-					'label' => Craft::t('_craft-cookies', 'Craft Cookie Category caches'),
-					'action' => [self::$plugin->getCookieConsent(), 'invalidateCaches'],
-				];
-			}
-		);
-
 		if (
 			App::parseEnv('$COOKIE_FRONTEND_ENABLED') &&
-			Craft::$app->getCache()->get('craft_cookies') &&
+			$this->getCookieCache()->get('craft_cookies') &&
 			Craft::$app->getRequest()->getIsSiteRequest() &&
 			!Craft::$app->getRequest()->getIsConsoleRequest()
 		) {

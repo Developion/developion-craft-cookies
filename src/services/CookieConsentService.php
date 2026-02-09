@@ -77,7 +77,7 @@ class CookieConsentService extends Component
 			]
 		])
 			->getBody()->getContents();
-		return Craft::$app->getCache()->set(
+		return Plugin::getInstance()->getCookieCache()->set(
 			'craft_categories',
 			$value,
 			null,
@@ -87,7 +87,7 @@ class CookieConsentService extends Component
 
 	public function getCookieCategories(): string
 	{
-		return Craft::$app->getCache()->get('craft_categories');
+		return Plugin::getInstance()->getCookieCache()->get('craft_categories');
 	}
 
 	public function setCookies()
@@ -104,7 +104,7 @@ class CookieConsentService extends Component
 			]
 		])
 			->getBody()->getContents();
-		return Craft::$app->getCache()->set(
+		return Plugin::getInstance()->getCookieCache()->set(
 			'craft_cookies',
 			$value,
 			null,
@@ -114,17 +114,18 @@ class CookieConsentService extends Component
 
 	public function getCookies(): string
 	{
-		return Craft::$app->getCache()->get('craft_cookies');
+		return Plugin::getInstance()->getCookieCache()->get('craft_cookies');
 	}
 
 	public function invalidateCaches(): void
 	{
-		$cache = Craft::$app->getCache();
+		$cache = Plugin::getInstance()->getCookieCache();
 		TagDependency::invalidate($cache, ['craft_cookies']);
 	}
 
 	public function refreshData(): void
 	{
+		// dd(json_decode($this->getCookieCategories(),true ));
 		$this->invalidateCaches();
 		$this->setCookies();
 		$this->setCookieCategories();
