@@ -22,7 +22,7 @@
 						<label class="cookie-category-toggle {% if item.mandatory %}disabled{% endif %}">
 							<span class="sr-only">{{ title }} Cookies</span>
 							{% set cookieHandle = item.handle ?? 'uncategorized' %}
-							<input name="{{ cookieHandle }}" type="checkbox" data-cookie-category="{{ cookieHandle }}" {% if item.mandatory %}disabled{% endif %} {% if checkCookie(cookieHandle) || item.mandatory %}checked{% endif %}>
+							<input name="{{ cookieHandle }}" type="checkbox" data-cookie-category="{{ cookieHandle }}" {% if item.mandatory %}disabled{% endif %} {% if checkCookie(cookieHandle) or item.mandatory %}checked{% endif %}>
 							<span class="cookie-category-slider">
 								<span class="cookie-icon check-icon">{{ include('_craft-cookies/_svg/checkmark') }}</span>
 								<span class="cookie-icon close-icon">{{ include('_craft-cookies/_svg/close') }}</span>

@@ -4,7 +4,7 @@
 {% set title = 'Craft Cookies - General Settings' %}
 {% if craft.app.getIsMultiSite() %}
 
-	{% if craft.app.getVersion()|integer === 5 %}
+	{% if craft.app.getVersion()|integer is same as 5 %}
 		{% set crumbs = [{
 			id: 'site-crumb',
 			icon: 'world',
