@@ -43,9 +43,20 @@ class CookieConsentService extends Component
 		$settings = $this->getSettings();
 		$prefix = $settings->cookieNamePrefix;
 
-		return Craft::$app->getRequest()
+		if ($this->isCategoryMandatory($category)) {
+			return true;
+		}
+
+		if (Craft::$app->getRequest()
 			->getCookies()
-			->getValue($prefix . $category) ?? false;
+			->get($prefix . $category)
+		) {
+			return Craft::$app->getRequest()
+				->getCookies()
+				->getValue($prefix . $category) ?? false;
+		}
+
+		return false;
 	}
 
 	public function setCookie(string $name, bool $value, int $expiration)
@@ -129,5 +140,16 @@ class CookieConsentService extends Component
 		$this->invalidateCaches();
 		$this->setCookies();
 		$this->setCookieCategories();
+	}
+
+	public function isCategoryMandatory(string $category): bool
+	{
+		$cookies = collect(json_decode($this->getCookies(), true));
+		$cookie = $cookies->firstWhere('handle', $category);
+		if ($cookie) {
+			return $cookie['mandatory'] ?? false;
+		}
+
+		return false;
 	}
 }
