@@ -42,6 +42,7 @@ class FrontAsset extends AssetBundle
 			'csrfParam' => Craft::$app->getRequest()->csrfParam,
 			'csrfToken' => Craft::$app->getRequest()->csrfToken,
 			'cookieNamePrefix' => Plugin::getInstance()->getSettings()->cookieNamePrefix,
+			'resetConsent' => Plugin::getInstance()->getCookieConsent()->shouldResetConsent(),
 		]);
 
 		$js = <<<JS

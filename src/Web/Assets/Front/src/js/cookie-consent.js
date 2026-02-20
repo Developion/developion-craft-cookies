@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', initCookieBar)
 
 function initCookieBar() {
 	sendCookies()
-	if (!hasConsent()) {
+	if (!hasConsent() || window.craftCookies.resetConsent) {
 		showConsentBar()
 		animateCookie()
 		document.dispatchEvent(new CustomEvent('cookieConsentOnLoad'))

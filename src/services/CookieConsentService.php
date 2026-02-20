@@ -152,4 +152,27 @@ class CookieConsentService extends Component
 
 		return false;
 	}
+
+	public function shouldResetConsent(): bool
+	{
+		$cookieCategory = collect(Craft::$app->getRequest()->getCookies()->toArray())
+			->map(function ($item, $key) {
+				if (str_starts_with($key, Plugin::getInstance()->getSettings()->cookieNamePrefix)) {
+					return $key;
+				}
+			})
+			->filter()
+			->flatten();
+		$cookies = collect(json_decode($this->getCookies(), true))
+			->map(function ($item) {
+				if ($item['handle']) {
+					return Plugin::getInstance()->getSettings()->cookieNamePrefix . $item['handle'];
+				}
+			})
+			->filter()
+			->diff($cookieCategory)
+			->isNotEmpty();
+
+		return $cookies;
+	}
 }
