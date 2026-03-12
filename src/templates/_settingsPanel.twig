@@ -33,14 +33,15 @@
 							<span class="sr-only">{{ 'Open category dropdown' }}</span>
 						</button>
 					</div>
-					<div class="cookie-category-description">{{ item.description|raw }}</div>
 					<div class="category-services-list">
-						{% if item.vendors %}
+						<div class="cookie-category-description">{{ item.description|raw }}</div>
+						{% if item.vendors %} 
+						<ul>
 							{% for vendor in item.vendors %}
-								{{ vendor|raw }}
+								<li>{{ vendor|raw }}</li>
 							{% endfor %}
+						</ul>
 						{% endif %}
-
 					</div>
 				</div>
 			{% endfor %}
