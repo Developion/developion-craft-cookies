@@ -136,7 +136,6 @@ class CookieConsentService extends Component
 
 	public function refreshData(): void
 	{
-		// dd(json_decode($this->getCookieCategories(),true ));
 		$this->invalidateCaches();
 		$this->setCookies();
 		$this->setCookieCategories();
