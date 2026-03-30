@@ -14,6 +14,7 @@ class Settings extends Model
 
 	public string $cookieNamePrefix = 'cookieConsent_';
 	public string $cookieManagerUrl = '$COOKIE_MANAGER_URL';
+	public string $cookieBannerPosition = 'bottomLeft';
 	public string $apiKey = '';
 
 	public function rules(): array
