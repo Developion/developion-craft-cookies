@@ -2,6 +2,9 @@
 {% set cookies = cookieConsent.getCookieConsent().getCookies()|json_decode %}
 
 <div class="cookie-settings-panel">
+	{% if bannerPosition == 'bottom--center'%}
+		<div class="cookie-image">{{ include('_craft-cookies/_svg/cookie') }}</div>
+	{% endif %}
 	<div class="cookie-settings-content">
 		<button class="cookie-settings-close" data-action="close-settings">
 			{{ include('_craft-cookies/_svg/close') }}

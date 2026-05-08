@@ -5,6 +5,20 @@
 {% set title = 'Craft Cookies - Project Settings' %}
 {% block content %}
 
+
+	{{ forms.selectField({
+		id: 'cookie-banner-position',
+		label: 'Cookie Banner Position' | t('_craft-cookies'),
+		instructions: 'Position of the cookie banner on the page' | t('_craft-cookies'),
+		options: {
+			'bottom--left': 'Bottom Left' | t('_craft-cookies'),
+			'bottom--center': 'Bottom Center' | t('_craft-cookies'),
+			'bottom--right': 'Bottom Right' | t('_craft-cookies'),
+		},
+		name: 'cookieBannerPosition',
+		value: settings.cookieBannerPosition,
+	}) }}
+
 	{{ forms.textField({
 		id: 'cookie-name-prefix',
 		label: 'Cookie Name Prefix' | t('_craft-cookies'),

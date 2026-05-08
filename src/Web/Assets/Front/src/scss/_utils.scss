@@ -10,8 +10,20 @@
   }
 }
 
+@mixin crScreenSize860 {
+  @media only screen and (max-width: 860px) {
+    @content;
+  }
+}
+
 @mixin crScreenSize680 {
   @media only screen and (max-width: 680px) {
+    @content;
+  }
+}
+
+@mixin crScreenSize600 {
+  @media only screen and (max-width: 600px) {
     @content;
   }
 }
