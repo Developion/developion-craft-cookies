@@ -183,7 +183,11 @@
 
 		.cookie-consent-text-wrapper {
 			display: flex;
-			gap: 5rem;
+			justify-content: space-between;
+		}
+
+		.cookie-settings-panel-inner {
+			max-width: 1126px;
 		}
 
 		.cookie-consent-text-inner {
@@ -392,18 +396,16 @@
 }
 
 .cookie-settings-panel {
+	display: none;
 	background-color: var(--bg-color);
 	border-radius: 5px;
 	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-	padding: 2em 1em 1em;
-	display: none;
 
-	// .cookie-image {
-	// 	svg {
-	// 		width: 90px;
-	// 		height: auto;
-	// 	}
-	// }
+	.cookie-settings-panel-inner {
+		position: relative;
+		padding: 2em 1em 1em;
+		margin-inline: auto;
+	}
 }
 
 .cookie-settings-header {
