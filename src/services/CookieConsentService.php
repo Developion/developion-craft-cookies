@@ -69,7 +69,8 @@ class CookieConsentService extends Component
 			'domain' => '',
 			'secure' => $secure,
 			'httpOnly' => true,
-			'sameSite' => null
+			'sameSite' => null,
+			'expire' => $expiration,
 		]));
 	}
 
