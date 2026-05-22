@@ -1,0 +1,71 @@
+{
+	"name": "@marcusgaius/ckeditor5-cookies",
+	"version": "0.0.1",
+	"description": "A plugin for CKEditor 5.",
+	"keywords": [
+		"ckeditor",
+		"ckeditor5",
+		"ckeditor 5",
+		"ckeditor5-feature",
+		"ckeditor5-plugin",
+		"ckeditor5-package-generator"
+	],
+	"type": "module",
+	"main": "dist/index.js",
+	"module": "dist/index.js",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		},
+		"./browser/*": "./dist/browser/*",
+		"./package.json": "./package.json"
+	},
+	"license": "MIT",
+	"engines": {
+		"node": ">=18.0.0",
+		"npm": ">=5.7.1"
+	},
+	"files": [
+		"dist",
+		"lang",
+		"src",
+		"theme",
+		"ckeditor5-metadata.json"
+	],
+	"devDependencies": {
+		"@ckeditor/ckeditor5-package-tools": "^5.0.0",
+		"ckeditor5": "^46.1.1",
+		"eslint": "^9.35.0",
+		"eslint-config-ckeditor5": ">=12.1.1",
+		"husky": "^9.1.7",
+		"lint-staged": "^16.1.6",
+		"stylelint": "^16.24.0",
+		"stylelint-config-ckeditor5": ">=12.1.1",
+		"terser": "^5.47.1",
+		"vite": "^8.0.13"
+	},
+	"peerDependencies": {
+		"ckeditor5": ">=46.1.1"
+	},
+	"scripts": {
+		"build": "vite build --mode production",
+		"build:dev": "vite build --mode development",
+		"lint": "eslint \"**/*.js\" --quiet",
+		"stylelint": "stylelint --quiet --allow-empty-input 'theme/**/*.css'",
+		"prepare": "npm run build"
+	},
+	"lint-staged": {
+		"**/*.js": [
+			"eslint --quiet"
+		],
+		"**/*.css": [
+			"stylelint --quiet --allow-empty-input"
+		]
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "lint-staged"
+		}
+	}
+}

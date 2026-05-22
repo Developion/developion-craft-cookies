@@ -38,4 +38,16 @@ class UtilitiesController extends Controller
 		}
 		return $this->asSuccess('Healthcheck successful.');
 	}
+
+	public function actionGetData()
+	{
+		$this->requirePostRequest();
+
+		$data = Plugin::getInstance()->getCookieConsent()->getCookieData();
+
+		return $this->asJson([
+			'success' => true,
+			'data' => $data
+		]);
+	}
 }

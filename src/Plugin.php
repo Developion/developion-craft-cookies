@@ -5,6 +5,7 @@ namespace developion\craftcookies;
 use Craft;
 use craft\base\Model;
 use craft\base\Plugin as BasePlugin;
+use craft\ckeditor\Plugin as CkeditorPlugin;
 use craft\events\DefineInputOptionsEvent;
 use craft\events\RegisterCacheOptionsEvent;
 use craft\events\RegisterComponentTypesEvent;
@@ -24,6 +25,8 @@ use developion\craftcookies\records\GeneralSettings;
 use developion\craftcookies\services\CookieConsentService;
 use developion\craftcookies\traits\Services;
 use developion\craftcookies\utilities\Cookies;
+use developion\craftcookies\Web\Assets\Cookies\CookiesAsset;
+use developion\craftcookies\Web\Assets\Cookies4\Cookies4Asset;
 use yii\base\Event;
 use yii\caching\FileCache;
 
@@ -150,6 +153,21 @@ class Plugin extends BasePlugin
 				$event->types[] = Cookies::class;
 			}
 		);
+
+		if (Craft::$app->getRequest()->getIsCpRequest()) {
+			Event::on(
+				View::class,
+				View::EVENT_BEFORE_RENDER_TEMPLATE,
+				static function (): void {
+					if (Plugin::getInstance()->version < '5.0') {
+						CkeditorPlugin::getInstance()::registerCkeditorPackage(Cookies4Asset::class);
+					} else {
+						CkeditorPlugin::getInstance()::registerCkeditorPackage(CookiesAsset::class, 'cookies.js');
+					}
+				}
+			);
+		}
+
 	}
 
 	public function getCpNavItem(): ?array
