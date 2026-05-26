@@ -10,6 +10,8 @@ categories.unshift('essential')
 
 document.addEventListener('DOMContentLoaded', initCookieBar)
 
+window.addEventListener('scroll', updateScrollState)
+
 function initCookieBar() {
 	sendCookies()
 	if (!hasConsent() || window.craftCookies.resetConsent) {
@@ -17,7 +19,7 @@ function initCookieBar() {
 		animateCookie()
 		document.dispatchEvent(new CustomEvent('cookieConsentOnLoad'))
 	} else {
-		showCookieOpener()
+		updateScrollState()
 	}
 
 	if (!window.__cookieConsentInitialized) {
@@ -39,10 +41,17 @@ function animateCookie() {
 	setTimeout(() => cookieImage.classList.remove('animate'), 2000)
 }
 
-function showCookieOpener() {
-	if (cookieOpener && cookieBannerClose) {
-		cookieOpener.style.display = 'flex'
-		cookieBannerClose.style.display = 'block'
+function updateScrollState() {
+	if (window.scrollY > 0) {
+		if (cookieOpener && cookieBannerClose) {
+			cookieOpener.classList.add('show')
+			cookieBannerClose.style.display = 'block'
+		}
+	} else {
+		if (cookieOpener && cookieBannerClose) {
+			cookieOpener.classList.remove('show')
+			cookieBannerClose.style.display = 'none'
+		}
 	}
 }
 
@@ -122,7 +131,7 @@ function bindConsentAction(selector, preferences, status) {
 			saveConsent(preferences, status)
 			setCheckboxesState(status)
 			hideConsentBar()
-			showCookieOpener()
+			updateScrollState()
 		})
 	})
 }
