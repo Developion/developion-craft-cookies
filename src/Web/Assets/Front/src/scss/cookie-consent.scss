@@ -19,7 +19,15 @@
 	bottom: 1.5em;
 	left: 1.5em;
 	z-index: 999999997;
-	display: none;
+	display: flex;
+	opacity: 0;
+	visibility: hidden;
+	transition: all 0.3s ease-in-out;
+
+	&.show {
+		opacity: 1;
+		visibility: visible;
+	}
 
 	button {
 		background-color: var(--bg-color);
@@ -358,16 +366,20 @@
 			max-width: 13.75em;
 		}
 
-		&.bottom-right {
+		.cookie-consent-button {
+			width: 100%;
+		}
+
+		&.bottom--right {
 			right: 1em;
 		}
 
-		&.bottom-left {
+		&.bottom--left {
 			left: 1em;
 		}
 
-		&.bottom-right,
-		&.bottom-left {
+		&.bottom--right,
+		&.bottom--left {
 			.cookie-consent-content {
 				padding: 2em 1em 1em;
 			}
@@ -391,6 +403,10 @@
 	@include crScreenSize600 {
 		.cookie-image {
 			display: none;
+		}
+
+		.cookie-consent-buttons {
+			max-width: unset;
 		}
 	}
 }
