@@ -114,8 +114,8 @@ function initializeEventListeners() {
 	const toggleButtons = [
 		document.querySelector('.cookie-opener-icon button'),
 		document.querySelector('.cookie-banner-close'),
-	]
-	if (toggleButtons) {
+	].filter( item => item !== null )
+	if (toggleButtons.length) {
 		toggleButtons.forEach((toggleButton) => {
 			toggleButton.addEventListener('click', () => {
 				consentBar.classList.toggle('show')

@@ -1,0 +1,84 @@
+{
+    "name": "@marcusgaius/ckeditor5-cookies",
+    "version": "0.0.1",
+    "description": "A plugin for CKEditor 5.",
+    "keywords": [
+        "ckeditor",
+        "ckeditor5",
+        "ckeditor 5",
+        "ckeditor5-feature",
+        "ckeditor5-plugin",
+        "ckeditor5-dll",
+        "ckeditor5-package-generator"
+    ],
+    "type": "module",
+    "main": "src/index.js",
+    "exports": {
+        ".": "./src/index.js",
+        "./dist/index.js": "./dist/index.js",
+        "./*": "./dist/*",
+        "./browser/*": null,
+        "./build/*": "./build/*",
+        "./src/*": "./src/*",
+        "./package.json": "./package.json"
+    },
+    "license": "MIT",
+    "engines": {
+        "node": ">=18.0.0",
+        "npm": ">=5.7.1"
+    },
+    "files": [
+        "dist",
+        "lang",
+        "src",
+        "theme",
+        "build",
+        "ckeditor5-metadata.json"
+    ],
+    "devDependencies": {
+        "@ckeditor/ckeditor5-dev-build-tools": "^41.0.0",
+        "@ckeditor/ckeditor5-font": "^41.0.0",
+        "@ckeditor/ckeditor5-inspector": ">=5.0.0",
+        "@ckeditor/ckeditor5-package-tools": "^4.1.0",
+        "ckeditor5": "^41.0.0",
+        "eslint": "^9.35.0",
+        "eslint-config-ckeditor5": ">=12.1.1",
+        "http-server": "^14.1.1",
+        "husky": "^9.1.7",
+        "lint-staged": "^16.1.6",
+        "stylelint": "^16.24.0",
+        "stylelint-config-ckeditor5": ">=12.1.1"
+    },
+    "peerDependencies": {
+        "ckeditor5": "^41.0.0 || ^0.0.0-nightly"
+    },
+    "scripts": {
+        "build:dist": "node ./scripts/build-dist.mjs",
+        "dll:build": "ckeditor5-package-tools dll:build",
+        "dll:serve": "http-server ./ -o sample/dll.html",
+        "lint": "eslint \"**/*.js\" --quiet",
+        "start": "ckeditor5-package-tools start",
+        "stylelint": "stylelint --quiet --allow-empty-input 'theme/**/*.css'",
+        "test": "ckeditor5-package-tools test",
+        "prepare": "npm run dll:build && npm run build:dist",
+        "translations:collect": "ckeditor5-package-tools translations:collect",
+        "translations:download": "ckeditor5-package-tools translations:download",
+        "translations:upload": "ckeditor5-package-tools translations:upload"
+    },
+    "lint-staged": {
+        "**/*.js": [
+            "eslint --quiet"
+        ],
+        "**/*.css": [
+            "stylelint --quiet --allow-empty-input"
+        ]
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged"
+        }
+    },
+    "dependencies": {
+        "@ckeditor/ckeditor5-special-characters": "^46.1.1"
+    }
+}

@@ -1,0 +1,17 @@
+{
+  "plugins": [
+    {
+      "name": "Tokens",
+      "className": "Tokens",
+      "description": "Adds text to the editor.",
+      "path": "src/tokens.js",
+      "uiComponents": [
+        {
+          "name": "tokensButton",
+          "type": "Button",
+          "iconPath": "theme/icons/ckeditor.svg"
+        }
+      ]
+    }
+  ]
+}

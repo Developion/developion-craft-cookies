@@ -1,0 +1,17 @@
+{
+  "plugins": [
+    {
+      "name": "Cookies",
+      "className": "Cookies",
+      "description": "Adds text to the editor.",
+      "path": "src/cookies.js",
+      "uiComponents": [
+        {
+          "name": "cookiesButton",
+          "type": "Button",
+          "iconPath": "theme/icons/ckeditor.svg"
+        }
+      ]
+    }
+  ]
+}

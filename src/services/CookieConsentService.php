@@ -6,6 +6,7 @@ use developion\craftcookies\models\Settings;
 use developion\craftcookies\Plugin;
 use Craft;
 use craft\helpers\App;
+use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
@@ -140,6 +141,7 @@ class CookieConsentService extends Component
 		$this->invalidateCaches();
 		$this->setCookies();
 		$this->setCookieCategories();
+		$this->setCookieData();
 	}
 
 	public function isCategoryMandatory(string $category): bool
@@ -174,5 +176,49 @@ class CookieConsentService extends Component
 			->isNotEmpty();
 
 		return $cookies;
+	}
+
+	public function setCookieData(): bool
+	{
+		$url = App::parseEnv(Plugin::getInstance()->getSettings()->cookieManagerUrl);
+		$client = new Client([
+			'base_uri' => $url,
+			'http_errors' => false,
+		]);
+		$response = $client->get("/api/cookie-data", [
+			RequestOptions::HEADERS => [
+				'Origin' => UrlHelper::baseSiteUrl(),
+				'Authorization' => 'Bearer ' . App::parseEnv(Plugin::getInstance()->getSettings()->apiKey),
+			]
+		])
+			->getBody()->getContents();
+
+		$response = Json::decode($response, true);
+
+		$data = array_map(function (array $cookie) {
+			return array_filter($cookie, function ($value) {
+				return $value !== null && (!is_string($value) || trim($value) !== '');
+			});
+		}, $response['data']);
+
+
+		return Plugin::getInstance()->getCookieCache()->set(
+			'craft_cookie_data',
+			$data,
+			null,
+			new TagDependency(['tags' => ['craft_cookies']])
+		);
+	}
+
+	public function getCookieData(): mixed
+	{
+		return Plugin::getInstance()->getCookieCache()->get('craft_cookie_data');
+	}
+
+	public function cookieData(): string
+	{
+		return Craft::$app->getView()->renderTemplate('_craft-cookies/_cookieData', [
+			'data' => $this->getCookieData()
+		]);
 	}
 }

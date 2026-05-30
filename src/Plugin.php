@@ -5,15 +5,12 @@ namespace developion\craftcookies;
 use Craft;
 use craft\base\Model;
 use craft\base\Plugin as BasePlugin;
-use craft\events\DefineInputOptionsEvent;
-use craft\events\RegisterCacheOptionsEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterTemplateRootsEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\helpers\App;
 use craft\services\Fields;
 use craft\services\Utilities;
-use craft\utilities\ClearCaches;
 use craft\web\UrlManager;
 use craft\web\View;
 use developion\craftcookies\Web\Assets\Front\FrontAsset;
@@ -143,13 +140,23 @@ class Plugin extends BasePlugin
 			);
 		}
 
-		Event::on(
-			Utilities::class,
-			Utilities::EVENT_REGISTER_UTILITIES,
-			function (RegisterComponentTypesEvent $event) {
-				$event->types[] = Cookies::class;
-			}
-		);
+		if (Craft::$app->version < '5.0') {
+			Event::on(
+				Utilities::class,
+				Utilities::EVENT_REGISTER_UTILITY_TYPES,
+				function (RegisterComponentTypesEvent $event) {
+					$event->types[] = Cookies::class;
+				}
+			);
+		} else {
+			Event::on(
+				Utilities::class,
+				Utilities::EVENT_REGISTER_UTILITIES,
+				function (RegisterComponentTypesEvent $event) {
+					$event->types[] = Cookies::class;
+				}
+			);
+		}
 	}
 
 	public function getCpNavItem(): ?array
