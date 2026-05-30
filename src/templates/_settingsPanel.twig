@@ -2,58 +2,60 @@
 {% set cookies = cookieConsent.getCookieConsent().getCookies()|json_decode %}
 
 <div class="cookie-settings-panel">
-	{% if bannerPosition == 'bottom--center'%}
-		<div class="cookie-image">{{ include('_craft-cookies/_svg/cookie') }}</div>
-	{% endif %}
-	<div class="cookie-settings-content">
-		<button class="cookie-settings-close" data-action="close-settings">
-			{{ include('_craft-cookies/_svg/close') }}
-			<span class="sr-only">{{ 'Close Settings'|t }}</span>
-		</button>
-		<div class="cookie-settings-header">
-			<h3>{{ generalSettings.settingsTitle }}</h3>
-		</div>
-		<div class="cookie-category-wrapper">
-			{% for key, item in cookies %}
-				{% set title = item.name %}
-				{% if item.name is null %}
-					{% set title = 'Uncategorized' %}
-				{% endif %}
-				<div class="cookie-category">
-					<div class="cookie-category-header">
-						<div class="cookie-category-title">{{ title }} Cookies</div>
-						<label class="cookie-category-toggle {% if item.mandatory %}disabled{% endif %}">
-							<span class="sr-only">{{ title }} Cookies</span>
-							{% set cookieHandle = item.handle ?? 'uncategorized' %}
-							<input name="{{ cookieHandle }}" type="checkbox" data-cookie-category="{{ cookieHandle }}" {% if item.mandatory %}disabled{% endif %} {% if checkCookie(cookieHandle) or item.mandatory %}checked{% endif %}>
-							<span class="cookie-category-slider">
-								<span class="cookie-icon check-icon">{{ include('_craft-cookies/_svg/checkmark') }}</span>
-								<span class="cookie-icon close-icon">{{ include('_craft-cookies/_svg/close') }}</span>
-							</span>
-						</label>
-						<button class="category-dropdown-opener">
-							<span>{{ include('_craft-cookies/_svg/caret-down') }}</span>
-							<span class="sr-only">{{ 'Open category dropdown' }}</span>
-						</button>
+	<div class="cookie-settings-panel-inner">
+		{% if bannerPosition == 'bottom--center'%}
+			<div class="cookie-image">{{ include('_craft-cookies/_svg/cookie') }}</div>
+		{% endif %}
+		<div class="cookie-settings-content">
+			<button class="cookie-settings-close" data-action="close-settings">
+				{{ include('_craft-cookies/_svg/close') }}
+				<span class="sr-only">{{ 'Close Settings'|t }}</span>
+			</button>
+			<div class="cookie-settings-header">
+				<h3>{{ generalSettings.settingsTitle }}</h3>
+			</div>
+			<div class="cookie-category-wrapper">
+				{% for key, item in cookies %}
+					{% set title = item.name %}
+					{% if item.name is null %}
+						{% set title = 'Uncategorized' %}
+					{% endif %}
+					<div class="cookie-category">
+						<div class="cookie-category-header">
+							<div class="cookie-category-title">{{ title }} Cookies</div>
+							<label class="cookie-category-toggle {% if item.mandatory %}disabled{% endif %}">
+								<span class="sr-only">{{ title }} Cookies</span>
+								{% set cookieHandle = item.handle ?? 'uncategorized' %}
+								<input name="{{ cookieHandle }}" type="checkbox" data-cookie-category="{{ cookieHandle }}" {% if item.mandatory %}disabled{% endif %} {% if checkCookie(cookieHandle) or item.mandatory %}checked{% endif %}>
+								<span class="cookie-category-slider">
+									<span class="cookie-icon check-icon">{{ include('_craft-cookies/_svg/checkmark') }}</span>
+									<span class="cookie-icon close-icon">{{ include('_craft-cookies/_svg/close') }}</span>
+								</span>
+							</label>
+							<button class="category-dropdown-opener">
+								<span>{{ include('_craft-cookies/_svg/caret-down') }}</span>
+								<span class="sr-only">{{ 'Open category dropdown' }}</span>
+							</button>
+						</div>
+						<div class="category-services-list">
+							<div class="cookie-category-description">{{ item.description|raw }}</div>
+							{% if item.vendors %}
+							<ul>
+								{% for vendor in item.vendors %}
+									<li>{{ vendor|raw }}</li>
+								{% endfor %}
+							</ul>
+							{% endif %}
+						</div>
 					</div>
-					<div class="category-services-list">
-						<div class="cookie-category-description">{{ item.description|raw }}</div>
-						{% if item.vendors %} 
-						<ul>
-							{% for vendor in item.vendors %}
-								<li>{{ vendor|raw }}</li>
-							{% endfor %}
-						</ul>
-						{% endif %}
-					</div>
-				</div>
-			{% endfor %}
+				{% endfor %}
+			</div>
+			<div class="cookie-settings-footer">
+				<button class="cookie-consent-button primary" data-action="save-preferences">{{ generalSettings.saveText }}</button>
+			</div>
 		</div>
-		<div class="cookie-settings-footer">
-			<button class="cookie-consent-button primary" data-action="save-preferences">{{ generalSettings.saveText }}</button>
+		<div class="cookie-consent-footer">
+			<p>Powered by <a href="https://contentreactor.com/">ContentReactor</a></p>
 		</div>
-	</div>
-	<div class="cookie-consent-footer">
-		<p>Powered by <a href="https://contentreactor.com/">ContentReactor</a></p>
 	</div>
 </div>
