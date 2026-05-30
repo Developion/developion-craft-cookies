@@ -140,13 +140,23 @@ class Plugin extends BasePlugin
 			);
 		}
 
-		Event::on(
-			Utilities::class,
-			Utilities::EVENT_REGISTER_UTILITIES,
-			function (RegisterComponentTypesEvent $event) {
-				$event->types[] = Cookies::class;
-			}
-		);
+		if (Craft::$app->version < '5.0') {
+			Event::on(
+				Utilities::class,
+				Utilities::EVENT_REGISTER_UTILITY_TYPES,
+				function (RegisterComponentTypesEvent $event) {
+					$event->types[] = Cookies::class;
+				}
+			);
+		} else {
+			Event::on(
+				Utilities::class,
+				Utilities::EVENT_REGISTER_UTILITIES,
+				function (RegisterComponentTypesEvent $event) {
+					$event->types[] = Cookies::class;
+				}
+			);
+		}
 	}
 
 	public function getCpNavItem(): ?array
