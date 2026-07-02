@@ -43,7 +43,7 @@ class UtilitiesController extends Controller
 	{
 		$this->requirePostRequest();
 
-		$data = Plugin::getInstance()->getCookieConsent()->getCookieData();
+		$data = Plugin::getInstance()->getCookieConsent()->getOrSetCookieData();
 
 		return $this->asJson([
 			'success' => true,

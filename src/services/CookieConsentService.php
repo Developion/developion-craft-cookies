@@ -177,8 +177,7 @@ class CookieConsentService extends Component
 
 		return $cookies;
 	}
-
-	public function setCookieData(): bool
+	private function _getCookieData(): array
 	{
 		$url = App::parseEnv(Plugin::getInstance()->getSettings()->cookieManagerUrl);
 		$client = new Client([
@@ -187,6 +186,7 @@ class CookieConsentService extends Component
 		]);
 		$response = $client->get("/api/cookie-data", [
 			RequestOptions::HEADERS => [
+				'Accept' => 'application/json',
 				'Origin' => UrlHelper::baseSiteUrl(),
 				'Authorization' => 'Bearer ' . App::parseEnv(Plugin::getInstance()->getSettings()->apiKey),
 			]
@@ -195,16 +195,28 @@ class CookieConsentService extends Component
 
 		$response = Json::decode($response, true);
 
-		$data = array_map(function (array $cookie) {
+		return array_map(function (array $cookie) {
 			return array_filter($cookie, function ($value) {
 				return $value !== null && (!is_string($value) || trim($value) !== '');
 			});
 		}, $response['data']);
+	}
 
-
+	public function setCookieData(): bool
+	{
 		return Plugin::getInstance()->getCookieCache()->set(
 			'craft_cookie_data',
-			$data,
+			$this->_getCookieData(),
+			null,
+			new TagDependency(['tags' => ['craft_cookies']])
+		);
+	}
+
+	public function getOrSetCookieData(): mixed
+	{
+		return Plugin::getInstance()->getCookieCache()->getOrSet(
+			'craft_cookie_data',
+			$this->_getCookieData(),
 			null,
 			new TagDependency(['tags' => ['craft_cookies']])
 		);
