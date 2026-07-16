@@ -1,19 +1,21 @@
-{% for cookie in data %}
-	<div class="cookie">
-		{% if cookie.cookie_name is defined %}
-			<div><strong>Cookie Name:</strong>{{ cookie.cookie_name }}</div>
-		{% endif %}
-
-		{% if cookie.vendor is defined %}
-			<div><strong>Vendor:</strong>{{ cookie.vendor }}</div>
-		{% endif %}
-
-		{% if cookie.category is defined %}
-			<div><strong>Category:</strong>{{ cookie.category }}</div>
-		{% endif %}
-
-		{% if cookie.description is defined %}
-			<div><strong>Description:</strong>{{ cookie.description }}</div>
-		{% endif %}
-	</div>
-{% endfor %}
+<table class="cookie-descriptions-table">
+	<colgroup><col style="width: 20%"/><col style="width: 20%"/><col style="width: 40%"/><col style="width: 10%"/></colgroup>
+	<thead>
+		<tr>
+			<th>{{ 'Name' | t('_craft-cookies' ) }}</th>
+			<th>{{ 'Vendor' | t('_craft-cookies' ) }}</th>
+			<th>{{ 'Description' | t('_craft-cookies' ) }}</th>
+			<th>{{ 'Category' | t('_craft-cookies' ) }}</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for cookie in data %}
+			<tr>
+				<td>{{ cookie.cookie_name }}</td>
+				<td>{{ cookie.vendor ?? '' }}</td>
+				<td>{{ cookie.description ?? '' }}</td>
+				<td>{{ cookie.category ?? '' }}</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

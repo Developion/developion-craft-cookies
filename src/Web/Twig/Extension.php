@@ -49,6 +49,9 @@ class Extension extends AbstractExtension implements GlobalsInterface
 			}),
 			new TwigFunction('cookieData', function(): string {
 				return Plugin::getInstance()->getCookieConsent()->cookieData();
+			}),
+			new TwigFunction('cookieDataRaw', function(): mixed {
+				return Plugin::getInstance()->getCookieConsent()->getCookieData();
 			})
 		];
 	}
