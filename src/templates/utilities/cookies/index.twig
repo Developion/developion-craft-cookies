@@ -23,3 +23,15 @@
 		<div class="utility-status"></div>
 	</div>
 </form>
+<hr>
+{{ cookieData() | raw }}
+
+{% css %}
+	.cookie-descriptions-table {
+		--dark-color: var(--secondary-button-bg);
+		--light-color: #fff;
+		* {
+			border: 2px solid var(--secondary-button-bg);
+		}
+	}
+{% endcss %}
