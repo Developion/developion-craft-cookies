@@ -11,10 +11,10 @@
 	<tbody>
 		{% for cookie in data %}
 			<tr>
-				<td data-cell="{{ cookie.cookie_name }}">{{ cookie.cookie_name }}</td>
-				<td data-cell="{{ cookie.vendor ?? '' }}">{{ cookie.vendor ?? '' }}</td>
-				<td data-cell="{{ cookie.description ?? '' }}">{{ cookie.description ?? '' }}</td>
-				<td data-cell="{{ cookie.category ?? '' }}">{{ cookie.category ?? '' }}</td>
+				<td data-cell="{{ 'Name' | t('_craft-cookies' ) }}">{{ cookie.cookie_name }}</td>
+				<td data-cell="{{ 'Vendor' | t('_craft-cookies' ) }}">{{ cookie.vendor ?? '' }}</td>
+				<td data-cell="{{ 'Description' | t('_craft-cookies' ) }}">{{ cookie.description ?? '' }}</td>
+				<td data-cell="{{ 'Category' | t('_craft-cookies' ) }}">{{ cookie.category ?? '' }}</td>
 			</tr>
 		{% endfor %}
 	</tbody>
