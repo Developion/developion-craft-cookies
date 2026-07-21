@@ -11,11 +11,18 @@
 	<tbody>
 		{% for cookie in data %}
 			<tr>
-				<td>{{ cookie.cookie_name }}</td>
-				<td>{{ cookie.vendor ?? '' }}</td>
-				<td>{{ cookie.description ?? '' }}</td>
-				<td>{{ cookie.category ?? '' }}</td>
+				<td data-cell="{{ cookie.cookie_name }}">{{ cookie.cookie_name }}</td>
+				<td data-cell="{{ cookie.vendor ?? '' }}">{{ cookie.vendor ?? '' }}</td>
+				<td data-cell="{{ cookie.description ?? '' }}">{{ cookie.description ?? '' }}</td>
+				<td data-cell="{{ cookie.category ?? '' }}">{{ cookie.category ?? '' }}</td>
 			</tr>
 		{% endfor %}
 	</tbody>
 </table>
+
+{% css %}
+	.cookie-descriptions-table {
+		--dark-color: var(--watercourse);
+		--light-color: #fff;
+	}
+{% endcss %}

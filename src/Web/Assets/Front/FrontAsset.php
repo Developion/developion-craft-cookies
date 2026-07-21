@@ -28,6 +28,7 @@ class FrontAsset extends AssetBundle
 
 		$this->css = [
 			'css/cookie-consent.css',
+			'css/cookie-table.css',
 		];
 
 
