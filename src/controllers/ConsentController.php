@@ -79,7 +79,7 @@ class ConsentController extends Controller
 		return $this->asJson($cookies);
 	}
 
-	public function actionSaveConsentData(): void
+	public function actionSaveConsentData()
 	{
 		$this->requirePostRequest();
 		$consent = Craft::$app->getRequest()->getBodyParam('consent');
@@ -109,6 +109,7 @@ class ConsentController extends Controller
 					'source' => $anonIp,
 				]
 			]);
+			return $reponse->getBody()->getContents();
 		} catch (\Throwable $th) {
 			Craft::error('Error sending consent data: ' . $th->getMessage(), __METHOD__);
 		}
